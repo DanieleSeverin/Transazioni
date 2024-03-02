@@ -18,6 +18,8 @@ public record SatispayMovements
                              new Money(Amount, Shared.Currency.FromCode(Currency)),
                              accountId: OriginAccountId,
                              destinationAccountId: DestinationAccountId,
-                             null);
+                             category: null,
+                             isImported: true,
+                             peridiocity: Peridiocity.None);
     }
 }

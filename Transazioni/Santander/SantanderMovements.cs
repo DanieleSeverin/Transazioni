@@ -19,6 +19,8 @@ public record SantanderMovements
                              new Money(Importo, Currency.FromCode(Divisa)),
                              accountId: OriginAccountId,
                              destinationAccountId: DestinationAccountId,
-                             new MovementCategory(Causale));
+                             new MovementCategory(Causale),
+                             isImported: true,
+                             peridiocity: Peridiocity.None);
     }
 }

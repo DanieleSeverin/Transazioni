@@ -27,7 +27,9 @@ public record CheBancaMovements
                              new Money(Importo, Currency.FromCode(Divisa)),
                              accountId: OriginAccountId,
                              destinationAccountId: DestinationAccountId, 
-                             null);
+                             category: null,
+                             isImported: true,
+                             peridiocity: Peridiocity.None);
     }
 
     public bool HasAmount()

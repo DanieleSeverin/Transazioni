@@ -22,7 +22,9 @@ public record FideuramMovements
                              new Money(Importo, Currency.FromCode(Valuta)),
                              accountId: OriginAccountId,
                              destinationAccountId: DestinationAccountId,
-                             new MovementCategory(Categoria) );
+                             new MovementCategory(Categoria),
+                             isImported: true,
+                             peridiocity: Peridiocity.None);
     }
 
 }

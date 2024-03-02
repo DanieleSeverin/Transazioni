@@ -26,6 +26,8 @@ public record PaypalMovements
                              new Money(Lordo, Currency.FromCode(Valuta)),
                              accountId: OriginAccountId,
                              destinationAccountId: DestinationAccountId,
-                             null);
+                             category: null,
+                             isImported: true,
+                             peridiocity: Peridiocity.None);
     }
 }

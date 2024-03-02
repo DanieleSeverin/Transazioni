@@ -12,6 +12,8 @@ public class Movements
     public AccountId AccountId { get; init; }
     public AccountId DestinationAccountId { get; init; }
     public MovementCategory? Category { get; init; }
+    public bool IsImported { get; init; } = false;
+    public Peridiocity Peridiocity { get; init; } = Peridiocity.None;
 
     public Accounts Account { get; init; } = null!;
     public Accounts DestinationAccount { get; init; } = null!;
@@ -21,7 +23,9 @@ public class Movements
                      Money money, 
                      AccountId accountId,
                      AccountId destinationAccountId,
-                     MovementCategory? category)
+                     MovementCategory? category,
+                     bool isImported,
+                     Peridiocity peridiocity)
     {
         Id = MovementId.New();
         Date = date;
@@ -30,6 +34,8 @@ public class Movements
         AccountId = accountId;
         DestinationAccountId = destinationAccountId;
         Category = category;
+        IsImported = isImported;
+        Peridiocity = peridiocity;
     }
 
     private Movements() { }
