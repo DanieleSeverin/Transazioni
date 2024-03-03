@@ -27,7 +27,7 @@ public class AccountsController : ControllerBase
 
         if(accountsResult.IsFailure)
         {
-            return StatusCode(500, accountsResult);
+            return StatusCode(500, accountsResult.Error);
         }
 
         var dtos = accountsResult.Value
@@ -47,7 +47,7 @@ public class AccountsController : ControllerBase
 
         if(createAccountsResult.IsFailure)
         {
-            return Conflict(createAccountsResult);
+            return Conflict(createAccountsResult.Error);
         }
 
         var newAccountDto = new AccountDto(
