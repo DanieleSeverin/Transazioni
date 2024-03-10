@@ -1,6 +1,6 @@
-﻿using Transazioni.Domain.Account;
-using Transazioni.Application.Abstractions.Messaging;
+﻿using Transazioni.Application.Abstractions.Messaging;
 using Transazioni.Domain.Abstractions;
+using Transazioni.Domain.Account;
 
 namespace Transazioni.Application.Account.GetAccounts;
 
