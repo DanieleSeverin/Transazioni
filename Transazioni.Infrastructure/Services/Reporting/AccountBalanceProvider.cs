@@ -17,11 +17,14 @@ public class AccountBalanceProvider : IAccountBalanceProvider
 
     public async Task<List<AccountsBalanceSummary>> GetAccountsBalance()
     {
+        var today = DateTime.Today;
+
         var query = from account in DbContext.Set<Accounts>()
                     where account.IsPatrimonial
                     join movement in DbContext.Set<Movements>()
                         on account.Id equals movement.AccountId into movementGroup
                     from movementTotal in movementGroup.DefaultIfEmpty()
+                    where movementTotal.Date <= today
                     group movementTotal by new { account.Id, account.AccountName, movementTotal.Money.Currency } into grouped
                     select new
                     {
