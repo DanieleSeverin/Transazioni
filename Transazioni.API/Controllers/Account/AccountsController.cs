@@ -32,17 +32,16 @@ public class AccountsController : ControllerBase
 
         var dtos = accountsResult.Value
             .Where(account => onlyPatrimonial == true ? account.IsPatrimonial : true)
-            .Select(account => new AccountDto(account.Id.Value, account.AccountName.Value))
+            .Select(account => new AccountDto(account.Id.Value, account.AccountName.Value, account.IsPatrimonial))
             .OrderBy(account => account.AccountName);
 
         return Ok(Result.Success(dtos));
     }
 
-    [HttpPost("{accountName}/{isPatrimonial}")]
-    public async Task<IActionResult> CreatePatrimonialAccount(
-        [FromRoute] string accountName, [FromRoute] bool isPatrimonial, CancellationToken cancellationToken)
+    [HttpPost()]
+    public async Task<IActionResult> CreatePatrimonialAccount([FromBody] CreateAccountRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateAccountCommand(accountName, isPatrimonial);
+        var command = new CreateAccountCommand(request.AccountName, request.IsPatrimonial);
         var createAccountsResult = await _sender.Send(command, cancellationToken);
 
         if(createAccountsResult.IsFailure)
@@ -51,7 +50,9 @@ public class AccountsController : ControllerBase
         }
 
         var newAccountDto = new AccountDto(
-            createAccountsResult.Value.Id.Value, createAccountsResult.Value.AccountName.Value);
+            createAccountsResult.Value.Id.Value, 
+            createAccountsResult.Value.AccountName.Value, 
+            createAccountsResult.Value.IsPatrimonial);
 
         return Ok(Result.Success(newAccountDto));
     }
