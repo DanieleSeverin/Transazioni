@@ -22,7 +22,7 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
     {
         //TODO: add validations 
 
-        DateTime startDate = request.Request.date;
+        DateTime startDate = request.Request.date.Date;
         MovementDescription description = new MovementDescription(request.Request.description);
         Money amount = new Money(request.Request.amount, Currency.FromCode(request.Request.currency));
         AccountId accountId = new AccountId(request.Request.accountId);
@@ -45,14 +45,17 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
         // Create additional movements if peridiocity is not None
         if (peridiocity != Peridiocity.None)
         {
-            DateTime maxEndDate = new DateTime(2049, 12, 31);
+            DateTime maxEndDate = new DateTime(2034, 12, 31);
             DateTime nextDate = startDate.GetNextPeridiocityDate(peridiocity);
 
             while (nextDate <= maxEndDate)
             {
+                // must instantiate new Money object to avoid conflict with Entity Framework
+                Money amount2 = new Money(request.Request.amount, Currency.FromCode(request.Request.currency));
+
                 Movements nextMovement = new Movements(nextDate,
                                                        description,
-                                                       amount,
+                                                       amount2,
                                                        accountId,
                                                        destinationAccountId,
                                                        category,
