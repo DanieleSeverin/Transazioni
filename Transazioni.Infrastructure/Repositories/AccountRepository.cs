@@ -28,6 +28,13 @@ internal class AccountRepository : IAccountRepository
         return await DbContext.Set<Accounts>().ToListAsync(cancellationToken);
     }
 
+    public async Task<Accounts?> GetById(AccountId AccountId, CancellationToken cancellationToken = default)
+    {
+        return await DbContext.Set<Accounts>().FirstOrDefaultAsync(
+            account => account.Id == AccountId,
+            cancellationToken);
+    }
+
     public async Task<Accounts?> GetByName(AccountName AccountName, CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<Accounts>().FirstOrDefaultAsync(

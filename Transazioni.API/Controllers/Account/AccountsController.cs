@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Transazioni.Application.Account.CreateAccount;
 using Transazioni.Application.Account.GetAccounts;
 using Transazioni.Domain.Abstractions;

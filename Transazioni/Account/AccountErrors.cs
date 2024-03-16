@@ -7,4 +7,8 @@ public static class AccountErrors
     public static Error AlreadyExists = new(
         "Account.AlreadyExists",
         "The account already exists.");
+
+    public static Error NotFound = new(
+        "Account.NotFound",
+        "Account not found.");
 }
