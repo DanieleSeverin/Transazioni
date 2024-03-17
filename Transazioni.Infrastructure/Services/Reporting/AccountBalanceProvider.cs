@@ -2,7 +2,6 @@
 using Transazioni.Application.Reporting.GetAccountsBalance;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
-using Transazioni.Domain.Shared;
 
 namespace Transazioni.Infrastructure.Services.Reporting;
 
@@ -15,7 +14,7 @@ public class AccountBalanceProvider : IAccountBalanceProvider
         DbContext = dbContext;
     }
 
-    public async Task<List<AccountsBalanceSummary>> GetAccountsBalance()
+    public async Task<List<AccountsBalanceSummary>> GetAccountsBalance(CancellationToken cancellationToken)
     {
         var today = DateTime.Today;
 
@@ -36,7 +35,7 @@ public class AccountBalanceProvider : IAccountBalanceProvider
                     orderby result.Balance descending
                     select result;
 
-        var materializedQuery = await query.ToListAsync();
+        var materializedQuery = await query.ToListAsync(cancellationToken);
 
         return materializedQuery.Select(result => new AccountsBalanceSummary(
             AccountId: result.AccountId.Value,

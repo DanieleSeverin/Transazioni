@@ -2,5 +2,5 @@
 
 public interface IAccountBalanceProvider
 {
-    public abstract Task<List<AccountsBalanceSummary>> GetAccountsBalance();
+    public abstract Task<List<AccountsBalanceSummary>> GetAccountsBalance(CancellationToken cancellationToken);
 }

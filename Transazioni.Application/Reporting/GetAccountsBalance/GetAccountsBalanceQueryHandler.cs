@@ -14,6 +14,6 @@ public class GetAccountsBalanceQueryHandler : IQueryHandler<GetAccountsBalanceQu
 
     public async Task<Result<List<AccountsBalanceSummary>>> Handle(GetAccountsBalanceQuery request, CancellationToken cancellationToken)
     {
-        return await _accountBalanceProvider.GetAccountsBalance();
+        return await _accountBalanceProvider.GetAccountsBalance(cancellationToken);
     }
 }

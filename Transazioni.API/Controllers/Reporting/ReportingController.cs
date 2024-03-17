@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Reporting.GetAccountsBalance;
+using Transazioni.Application.Reporting.GetCosts;
 
 namespace Transazioni.API.Controllers.Reporting;
 
@@ -24,7 +25,22 @@ public class ReportingController : ControllerBase
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Error);
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("costs")]
+    public async Task<IActionResult> GetCosts(CancellationToken cancellationToken)
+    {
+        var query = new GetCostsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Error);
         }
 
         return Ok(result);

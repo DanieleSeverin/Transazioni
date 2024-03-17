@@ -6,6 +6,7 @@ using Transazioni.Application.CheBanca.UploadCheBancaMovements;
 using Transazioni.Application.Fideuram.UploadFideuramMovements;
 using Transazioni.Application.Paypal.UploadPaypalMovements;
 using Transazioni.Application.Reporting.GetAccountsBalance;
+using Transazioni.Application.Reporting.GetCosts;
 using Transazioni.Application.Santander.uploadSantanderMovements;
 using Transazioni.Application.Satispay.UploadSatispayMovements;
 using Transazioni.Domain.Abstractions;
@@ -67,5 +68,6 @@ public static class DependencyInjection
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordEncrypter, PasswordEncrypter>();
         services.AddScoped<IAccountBalanceProvider, AccountBalanceProvider>();
+        services.AddScoped<ICostsProvider, CostsProvider>();
     }
 }
