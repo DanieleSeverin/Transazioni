@@ -1,27 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Transazioni.Application.Reporting.GetCosts;
+using Transazioni.Application.Reporting.GetRevenue;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 
 namespace Transazioni.Infrastructure.Services.Reporting;
 
-internal class CostsProvider : ICostsProvider
+internal class RevenueProvider : IRevenueProvider
 {
     private readonly ApplicationDbContext dbContext;
 
-    public CostsProvider(ApplicationDbContext dbContext)
+    public RevenueProvider(ApplicationDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
 
-    public async Task<List<CostsSummary>> GetCosts(CancellationToken cancellationToken)
+    public async Task<List<RevenueSummary>> GetRevenue(CancellationToken cancellationToken)
     {
         var query = from movement in dbContext.Set<Movements>()
                     join account in dbContext.Set<Accounts>() on movement.DestinationAccountId equals account.Id
-                    where movement.Money.Amount < 0 && !account.IsPatrimonial
+                    where movement.Money.Amount > 0 && !account.IsPatrimonial
                     group new { movement.DestinationAccountId, account.AccountName, movement.Money.Currency, movement.Money.Amount }
                     by new { movement.DestinationAccountId, account.AccountName, movement.Money.Currency } into grouped
-                    orderby grouped.Sum(m => m.Amount)
+                    orderby grouped.Sum(m => m.Amount) descending
                     select new
                     {
                         DestinationAccountId = grouped.Key.DestinationAccountId,
@@ -32,7 +32,7 @@ internal class CostsProvider : ICostsProvider
 
         var materializedQuery = await query.ToListAsync(cancellationToken);
 
-        return materializedQuery.Select(result => new CostsSummary(
+        return materializedQuery.Select(result => new RevenueSummary(
             DestinationAccountId : result.DestinationAccountId.Value,
             AccountName : result.AccountName.Value,
             Amount : result.Amount,

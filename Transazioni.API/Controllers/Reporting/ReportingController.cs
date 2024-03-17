@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Reporting.GetAccountsBalance;
 using Transazioni.Application.Reporting.GetCosts;
+using Transazioni.Application.Reporting.GetRevenue;
 
 namespace Transazioni.API.Controllers.Reporting;
 
@@ -35,6 +36,21 @@ public class ReportingController : ControllerBase
     public async Task<IActionResult> GetCosts(CancellationToken cancellationToken)
     {
         var query = new GetCostsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Error);
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("revenue")]
+    public async Task<IActionResult> GetRevenue(CancellationToken cancellationToken)
+    {
+        var query = new GetRevenueQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 
