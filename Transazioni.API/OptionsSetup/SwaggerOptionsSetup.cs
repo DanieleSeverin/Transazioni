@@ -12,7 +12,7 @@ public class SwaggerOptionsSetup : IConfigureOptions<SwaggerGenOptions>
     public void Configure(SwaggerGenOptions options)
     {
         options.SwaggerDoc("v1",
-            new OpenApiInfo { Title = "My Menu API", Version = "v1" });
+            new OpenApiInfo { Title = "Transactions API", Version = "v1" });
 
         options.AddSecurityDefinition(Scheme, new OpenApiSecurityScheme
         {
