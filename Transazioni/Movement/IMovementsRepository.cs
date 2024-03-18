@@ -5,6 +5,6 @@ namespace Transazioni.Domain.Movement;
 public interface IMovementsRepository
 {
     public void Add(Movements movement);
-    public Task<List<Movements>> Get();
-    public Task RemoveDateRange(AccountId AccountId, DateTime StartDate, DateTime EndDate);
+    public Task<List<Movements>> Get(CancellationToken cancellationToken);
+    public Task RemoveDateRange(AccountId AccountId, DateTime StartDate, DateTime EndDate, CancellationToken cancellationToken);
 }

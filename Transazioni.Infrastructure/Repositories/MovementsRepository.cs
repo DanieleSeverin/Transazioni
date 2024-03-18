@@ -18,12 +18,16 @@ internal class MovementsRepository : IMovementsRepository
         DbContext.Set<Movements>().Add(movement);
     }
 
-    public async Task<List<Movements>> Get()
+    public async Task<List<Movements>> Get(CancellationToken cancellationToken)
     {
-        return await DbContext.Set<Movements>().ToListAsync();
+        return await DbContext.Set<Movements>()
+            .Include(x => x.Account)
+            .Include(x => x.DestinationAccount)
+            .AsSingleQuery()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task RemoveDateRange(AccountId AccountId, DateTime StartDate, DateTime EndDate)
+    public async Task RemoveDateRange(AccountId AccountId, DateTime StartDate, DateTime EndDate, CancellationToken cancellationToken)
     {
         if(StartDate > EndDate)
         {
@@ -32,13 +36,13 @@ internal class MovementsRepository : IMovementsRepository
 
         var movements = await DbContext.Set<Movements>()
             .Where(x => x.AccountId == AccountId && x.Date >= StartDate && x.Date <= EndDate)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var moneys = movements.Select(x => x.Money);
         DbContext.RemoveRange(moneys);
 
         DbContext.Set<Movements>().RemoveRange(movements);
 
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 }

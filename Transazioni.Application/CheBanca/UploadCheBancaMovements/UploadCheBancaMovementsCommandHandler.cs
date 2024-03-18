@@ -52,7 +52,7 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements);
+        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -116,12 +116,12 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<CheBancaMovements> movements)
+    private async Task RemoveOldMovements(AccountId id, List<CheBancaMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.DataContabile).ToList();
         DateTime first = movements.First().DataContabile;
         DateTime last = movements.Last().DataContabile;
 
-        await _movementsRepository.RemoveDateRange(id, first, last);
+        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
     }
 }

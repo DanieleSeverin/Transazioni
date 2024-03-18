@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.API.Controllers.Account;
 using Transazioni.Application.Movement.CreateMovement;
+using Transazioni.Application.Movement.GetMovements;
 using Transazioni.Domain.Abstractions;
 
 namespace Transazioni.API.Controllers.Movement;
@@ -15,6 +16,20 @@ public class MovementsController : ControllerBase
     public MovementsController(ISender sender)
     {
         _sender = sender;
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetMovements(CancellationToken cancellationToken)
+    {
+        var query = new GetMovementsQuery();
+        var getMovementsResult = await _sender.Send(query, cancellationToken);
+
+        if (getMovementsResult.IsFailure)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, getMovementsResult.Error);
+        }
+
+        return Ok(getMovementsResult);
     }
 
     [HttpPost()]

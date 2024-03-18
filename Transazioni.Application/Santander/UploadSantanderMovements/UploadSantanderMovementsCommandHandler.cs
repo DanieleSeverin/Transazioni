@@ -52,7 +52,7 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements);
+        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -110,12 +110,12 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<SantanderMovements> movements)
+    private async Task RemoveOldMovements(AccountId id, List<SantanderMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.DataMovimento).ToList();
         DateTime first = movements.First().DataMovimento;
         DateTime last = movements.Last().DataMovimento;
 
-        await _movementsRepository.RemoveDateRange(id, first, last);
+        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
     }
 }
