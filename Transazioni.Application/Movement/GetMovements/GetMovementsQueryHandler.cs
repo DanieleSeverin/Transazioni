@@ -1,9 +1,6 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using System.Linq;
-using Transazioni.Application.Abstractions.Messaging;
+﻿using Transazioni.Application.Abstractions.Messaging;
 using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Movement;
-using Transazioni.Domain.Shared;
 
 namespace Transazioni.Application.Movement.GetMovements;
 
@@ -18,8 +15,11 @@ public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, List<Ge
 
     public async Task<Result<List<GetMovementsResponse>>> Handle(GetMovementsQuery request, CancellationToken cancellationToken)
     {
-        List<Movements> movements = await _movementsRepository.Get(cancellationToken);
+        List <Movements> movements = await _movementsRepository.Get(cancellationToken);
 
+        //TODO: apply filter
+
+        // Convert to Dto
         return movements.Select(mov => new GetMovementsResponse(
             Id: mov.Id.Value,
             Date: mov.Date,

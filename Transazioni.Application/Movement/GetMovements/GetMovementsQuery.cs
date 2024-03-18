@@ -3,4 +3,4 @@ using Transazioni.Domain.Movement;
 
 namespace Transazioni.Application.Movement.GetMovements;
 
-public sealed record GetMovementsQuery() : IQuery<List<GetMovementsResponse>>;
+public sealed record GetMovementsQuery(GetMovementFilter filter) : IQuery<List<GetMovementsResponse>>;

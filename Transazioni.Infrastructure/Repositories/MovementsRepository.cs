@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 
@@ -18,7 +19,7 @@ internal class MovementsRepository : IMovementsRepository
         DbContext.Set<Movements>().Add(movement);
     }
 
-    public async Task<List<Movements>> Get(CancellationToken cancellationToken)
+    public async Task<List<Movements>> Get(CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<Movements>()
             .Include(x => x.Account)
