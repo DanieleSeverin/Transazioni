@@ -17,7 +17,17 @@ public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, List<Ge
     {
         List <Movements> movements = await _movementsRepository.Get(cancellationToken);
 
-        //TODO: apply filter
+        // Apply filter
+        movements = movements
+            .FilterByOriginAccountId(request.filter.originAccountId)
+            .FilterByDestinationAccountId(request.filter.destinationAccountId)
+            .GreaterOrEqualsThanDate(request.filter.startDate)
+            .LowerOrEqualsThanDate(request.filter.endDate)
+            .FilterByCategory(request.filter.category)
+            .GreaterOrEqualsThanAmount(request.filter.amountGreaterThan)
+            .LowerOrEqualsThanAmount(request.filter.amountLowerThan)
+            .FilterByCurrency(request.filter.currency)
+            .FilterByIsImported(request.filter.imported);
 
         // Convert to Dto
         return movements.Select(mov => new GetMovementsResponse(
