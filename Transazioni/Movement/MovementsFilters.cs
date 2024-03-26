@@ -2,69 +2,69 @@
 
 public static class MovementsFilters
 {
-    public static List<Movements> FilterByOriginAccountId(this List<Movements> movements, Guid? originAccountId)
+    public static IEnumerable<Movements> FilterByOriginAccountId(this IEnumerable<Movements> movements, Guid? originAccountId)
     {
         if (originAccountId is null) return movements;
 
-        return movements.Where(x => x.AccountId.Value == originAccountId).ToList();
+        return movements.Where(x => x.AccountId.Value == originAccountId);
     }
 
-    public static List<Movements> FilterByDestinationAccountId(this List<Movements> movements, Guid? destinationAccountId)
+    public static IEnumerable<Movements> FilterByDestinationAccountId(this IEnumerable<Movements> movements, Guid? destinationAccountId)
     {
         if (destinationAccountId is null) return movements;
 
-        return movements.Where(x => x.AccountId.Value == destinationAccountId).ToList();
+        return movements.Where(x => x.AccountId.Value == destinationAccountId);
     }
 
-    public static List<Movements> GreaterOrEqualsThanDate(this List<Movements> movements, DateTime? date)
+    public static IEnumerable<Movements> GreaterOrEqualsThanDate(this IEnumerable<Movements> movements, DateTime? date)
     {
         if (date is null) return movements;
 
-        return movements.Where(x => x.Date >= date).ToList();
+        return movements.Where(x => x.Date >= date);
     }
 
-    public static List<Movements> LowerOrEqualsThanDate(this List<Movements> movements, DateTime? date)
+    public static IEnumerable<Movements> LowerOrEqualsThanDate(this IEnumerable<Movements> movements, DateTime? date)
     {
         if (date is null) return movements;
 
-        return movements.Where(x => x.Date <= date).ToList();
+        return movements.Where(x => x.Date <= date);
     }
 
-    public static List<Movements> FilterByCategory(this List<Movements> movements, string? category)
+    public static IEnumerable<Movements> FilterByCategory(this IEnumerable<Movements> movements, string? category)
     {
-        if (string.IsNullOrWhiteSpace(category)) return movements.Where(x => x.Category is null).ToList();
+        if (string.IsNullOrWhiteSpace(category)) return movements.Where(x => x.Category is null);
 
         return movements.Where(x => 
             x.Category is not null &&
-            x.Category.Value.Equals(category, StringComparison.InvariantCultureIgnoreCase) ).ToList();
+            x.Category.Value.Equals(category, StringComparison.InvariantCultureIgnoreCase) );
     }
 
-    public static List<Movements> GreaterOrEqualsThanAmount(this List<Movements> movements, decimal? amount)
+    public static IEnumerable<Movements> GreaterOrEqualsThanAmount(this IEnumerable<Movements> movements, decimal? amount)
     {
         if (amount is null) return movements;
 
-        return movements.Where(x => x.Money.Amount >= amount).ToList();
+        return movements.Where(x => x.Money.Amount >= amount);
     }
 
-    public static List<Movements> LowerOrEqualsThanAmount(this List<Movements> movements, decimal? amount)
+    public static IEnumerable<Movements> LowerOrEqualsThanAmount(this IEnumerable<Movements> movements, decimal? amount)
     {
         if (amount is null) return movements;
 
-        return movements.Where(x => x.Money.Amount <= amount).ToList();
+        return movements.Where(x => x.Money.Amount <= amount);
     }
 
-    public static List<Movements> FilterByCurrency(this List<Movements> movements, string? currency)
+    public static IEnumerable<Movements> FilterByCurrency(this IEnumerable<Movements> movements, string? currency)
     {
         if (string.IsNullOrWhiteSpace(currency)) return movements;
 
         return movements.Where(x =>
-            x.Money.Currency.Code.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            x.Money.Currency.Code.Equals(currency, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public static List<Movements> FilterByIsImported(this List<Movements> movements, bool? isImported)
+    public static IEnumerable<Movements> FilterByIsImported(this IEnumerable<Movements> movements, bool? isImported)
     {
         if (isImported is null) return movements;
 
-        return movements.Where(x => x.IsImported == isImported).ToList();
+        return movements.Where(x => x.IsImported == isImported);
     }
 }

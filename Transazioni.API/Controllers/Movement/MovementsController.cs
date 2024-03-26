@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Transazioni.API.Controllers.Account;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Transazioni.Application.Movement.CreateMovement;
 using Transazioni.Application.Movement.GetMovements;
-using Transazioni.Domain.Abstractions;
+using Transazioni.Domain.Utilities.Ordering;
+using Transazioni.Domain.Utilities.Pagination;
 
 namespace Transazioni.API.Controllers.Movement;
 
@@ -29,9 +31,13 @@ public class MovementsController : ControllerBase
         [FromQuery] decimal? amountLowerThan = null,
         [FromQuery] string? currency = null,
         [FromQuery] bool? imported = null,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? orderBy = null,
+        [FromQuery] bool? ascending = null,
         CancellationToken cancellationToken = default)
     {
-        GetMovementFilter filter = new GetMovementFilter(
+        GetMovementFilter filters = new GetMovementFilter(
             originAccountId: originAccountId,
             destinationAccountId: destinationAccountId,
             startDate: startDate,
@@ -43,7 +49,13 @@ public class MovementsController : ControllerBase
             imported: imported
         );
 
-        var query = new GetMovementsQuery(filter);
+        PaginationConfigurations paginationConfigurations = new PaginationConfigurations(
+            pageNumber: pageNumber, pageSize: pageSize);
+
+        OrderingConfigurations orderingConfigurations = new OrderingConfigurations(
+            propertyName: orderBy, ascending: ascending ?? true);
+
+        var query = new GetMovementsQuery(filters, paginationConfigurations, orderingConfigurations);
         var getMovementsResult = await _sender.Send(query, cancellationToken);
 
         if (getMovementsResult.IsFailure)
