@@ -13,7 +13,7 @@ public static class MovementsFilters
     {
         if (destinationAccountId is null) return movements;
 
-        return movements.Where(x => x.AccountId.Value == destinationAccountId);
+        return movements.Where(x => x.DestinationAccountId.Value == destinationAccountId);
     }
 
     public static IEnumerable<Movements> GreaterOrEqualsThanDate(this IEnumerable<Movements> movements, DateTime? date)
