@@ -6,7 +6,7 @@ using Transazioni.Domain.Utilities.Ordering;
 
 namespace Transazioni.Application.Movement.GetMovements;
 
-public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, List<GetMovementsResponse>>
+public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, PaginationResponse<GetMovementsResponse>>
 {
     public readonly IMovementsRepository _movementsRepository;
 
@@ -15,9 +15,9 @@ public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, List<Ge
         _movementsRepository = movementsRepository;
     }
 
-    public async Task<Result<List<GetMovementsResponse>>> Handle(GetMovementsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<GetMovementsResponse>>> Handle(GetMovementsQuery request, CancellationToken cancellationToken)
     {
-        return (await _movementsRepository.Get(cancellationToken))
+        List<GetMovementsResponse> movements = (await _movementsRepository.Get(cancellationToken))
             .FilterByOriginAccountId(request.filter.originAccountId)
             .FilterByDestinationAccountId(request.filter.destinationAccountId)
             .GreaterOrEqualsThanDate(request.filter.startDate)
@@ -28,7 +28,10 @@ public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, List<Ge
             .FilterByCurrency(request.filter.currency)
             .FilterByIsImported(request.filter.imported)
             .OrderByProperty(request.orderingConfigurations)
+            .OutputCount(out int count)
             .Paginate(request.paginationConfigurations)
             .ToDto();
+
+        return new PaginationResponse<GetMovementsResponse>(count, movements);
     }
 }

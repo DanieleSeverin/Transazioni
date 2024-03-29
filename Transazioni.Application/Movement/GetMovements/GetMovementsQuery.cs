@@ -8,4 +8,4 @@ public sealed record GetMovementsQuery(
     GetMovementFilter filter, 
     PaginationConfigurations paginationConfigurations,
     OrderingConfigurations orderingConfigurations) 
-        : IQuery<List<GetMovementsResponse>>;
+        : IQuery<PaginationResponse<GetMovementsResponse>>;

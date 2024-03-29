@@ -15,4 +15,10 @@ public static class Paginator
         int skip = (pageNumber - 1) * pageSize;
         return list.Skip(skip).Take(pageSize);
     }
+
+    public static IEnumerable<T> OutputCount<T>(this IEnumerable<T> list, out int count)
+    {
+        count = list.Count();
+        return list;
+    }
 }

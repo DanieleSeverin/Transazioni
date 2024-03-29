@@ -1,6 +1,4 @@
-﻿using Transazioni.Domain.Shared;
-
-namespace Transazioni.Application.Movement.GetMovements;
+﻿namespace Transazioni.Application.Movement.GetMovements;
 
 public sealed record GetMovementsResponse(
     Guid Id,
