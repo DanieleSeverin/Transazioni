@@ -1,7 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Transazioni.Application.Movement.CreateMovement;
 using Transazioni.Application.Movement.GetMovements;
 using Transazioni.Domain.Utilities.Ordering;

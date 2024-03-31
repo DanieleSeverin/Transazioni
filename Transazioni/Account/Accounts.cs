@@ -2,7 +2,7 @@
 
 namespace Transazioni.Domain.Account;
 
-public class Accounts
+public class Accounts : IComparable, IComparable<Accounts>
 {
     public AccountId Id { get; init; }
     public AccountName AccountName { get; init; } = null!;
@@ -29,5 +29,30 @@ public class Accounts
     public void AddDestinationMovement(Movements movement)
     {
         _destinationMovements.Add(movement);
+    }
+
+    public int CompareTo(Accounts? other)
+    {
+        if (other == null)
+        {
+            return 1;
+        }
+
+        return this.AccountName.Value.CompareTo(other.AccountName.Value);
+    }
+
+    public int CompareTo(object? obj)
+    {
+        if(obj == null)
+        {
+            return 1;
+        }
+
+        if(obj.GetType() != typeof(Accounts))
+        {
+            throw new ArgumentException("Argoument type should be 'Accounts'.");
+        }
+
+        return this.CompareTo((Accounts?)obj);
     }
 }

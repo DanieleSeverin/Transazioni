@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Transazioni.Domain.Account;
 
 namespace Transazioni.Domain.Utilities.Ordering;
 
@@ -8,6 +9,9 @@ public static class Orderer
     {
         if (source == null)
             throw new ArgumentNullException(nameof(source));
+
+        if (source.Count() < 2)
+            return source;
 
         configurations ??= new OrderingConfigurations();
 
@@ -21,6 +25,12 @@ public static class Orderer
 
         if (!propertyInfo.CanRead)
             throw new InvalidOperationException($"Property '{configurations.propertyName}' does not have a getter.");
+
+        bool implementsIComparable = typeof(IComparable).IsAssignableFrom(propertyInfo.PropertyType);
+        if (!implementsIComparable)
+        {
+            throw new InvalidOperationException($"{propertyInfo.Name} does not implement IComparable.");
+        }
 
         Func<T, object?> keySelector = item => propertyInfo.GetValue(item);
 

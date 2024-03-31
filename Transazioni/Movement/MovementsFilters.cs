@@ -32,7 +32,7 @@ public static class MovementsFilters
 
     public static IEnumerable<Movements> FilterByCategory(this IEnumerable<Movements> movements, string? category)
     {
-        if (string.IsNullOrWhiteSpace(category)) return movements.Where(x => x.Category is null);
+        if (string.IsNullOrWhiteSpace(category)) return movements;
 
         return movements.Where(x => 
             x.Category is not null &&
