@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Fideuram.UploadFideuramMovements;
 
 namespace Transazioni.API.Controllers.Fideuram;
 
+[Authorize]
 [ApiController]
 [Route("api/Fideuram")]
 public class FideuramController : ControllerBase

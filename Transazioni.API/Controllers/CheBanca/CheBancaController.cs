@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.CheBanca.UploadCheBancaMovements;
 
 namespace Transazioni.API.Controllers.CheBanca;
 
+[Authorize]
 [ApiController]
 [Route("api/CheBanca")]
 public class CheBancaController : ControllerBase

@@ -1,8 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Satispay.UploadSatispayMovements;
 
 namespace Transazioni.API.Controllers.Satispay;
+
+[Authorize]
 [ApiController]
 [Route("api/Satispay")]
 

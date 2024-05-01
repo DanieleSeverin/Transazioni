@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Movement.CreateMovement;
 using Transazioni.Application.Movement.GetMovements;
@@ -7,6 +8,7 @@ using Transazioni.Domain.Utilities.Pagination;
 
 namespace Transazioni.API.Controllers.Movement;
 
+[Authorize]
 [Route("api/Movements")]
 [ApiController]
 public class MovementsController : ControllerBase

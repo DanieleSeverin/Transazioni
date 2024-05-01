@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Account.CreateAccount;
 using Transazioni.Application.Account.GetAccounts;
@@ -6,6 +7,7 @@ using Transazioni.Domain.Abstractions;
 
 namespace Transazioni.API.Controllers.Account;
 
+[Authorize]
 [Route("api/Accounts")]
 [ApiController]
 public class AccountsController : ControllerBase

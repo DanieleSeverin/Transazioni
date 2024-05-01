@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.AccountRule.CreateAccountRule;
 using Transazioni.Domain.Abstractions;
@@ -7,6 +8,7 @@ using Transazioni.Domain.AccountRule;
 
 namespace Transazioni.API.Controllers.AccountRule;
 
+[Authorize]
 [Route("api/AccountRules")]
 [ApiController]
 public class AccountRulesController : ControllerBase

@@ -1,8 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Santander.UploadSantanderMovements;
 
 namespace Transazioni.API.Controllers.Santander;
+
+[Authorize]
 [ApiController]
 [Route("api/Santander")]
 public class SantanderController : ControllerBase

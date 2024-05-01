@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Paypal.UploadPaypalMovements;
 
 namespace Transazioni.API.Controllers.Paypal;
 
+[Authorize]
 [ApiController]
 [Route("api/Paypal")]
 public class PaypalController : ControllerBase

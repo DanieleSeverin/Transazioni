@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.Application.Reporting.GetAccountsBalance;
 using Transazioni.Application.Reporting.GetCosts;
@@ -6,6 +7,7 @@ using Transazioni.Application.Reporting.GetRevenue;
 
 namespace Transazioni.API.Controllers.Reporting;
 
+[Authorize]
 [Route("api/reporting")]
 [ApiController]
 public class ReportingController : ControllerBase
