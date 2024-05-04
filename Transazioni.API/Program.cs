@@ -33,9 +33,10 @@ if (app.Environment.IsDevelopment())
 
     app.UseCors( opt =>
     {
-        opt.AllowAnyOrigin();
+        opt.WithOrigins("http://localhost:4200");
         opt.AllowAnyMethod();
         opt.AllowAnyHeader();
+        opt.AllowCredentials();
     });
 }
 

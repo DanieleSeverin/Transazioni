@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Transazioni.API.Costants;
 using Transazioni.Application.Users.LogInUser;
 using Transazioni.Application.Users.RegisterUser;
 
-namespace Transazioni.API.Controllers.Users;
+namespace Transazioni.API.Controllers.Authentication;
 
 [Authorize]
 [ApiController]
@@ -62,7 +63,8 @@ public class UsersController : ControllerBase
             new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.None,
+                Secure = true
             });
 
         HttpContext.Response.Cookies.Append(
@@ -72,7 +74,8 @@ public class UsersController : ControllerBase
             {
                 HttpOnly = true,
                 Path = "/api/users/refresh",
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.None,
+                Secure = true
             });
 
         return Ok();

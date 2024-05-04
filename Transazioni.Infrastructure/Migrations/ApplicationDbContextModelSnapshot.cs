@@ -112,9 +112,6 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -122,8 +119,6 @@ namespace Transazioni.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("RefreshToken");
                 });
@@ -210,12 +205,6 @@ namespace Transazioni.Infrastructure.Migrations
                     b.HasOne("Transazioni.Domain.Users.User", null)
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Transazioni.Domain.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

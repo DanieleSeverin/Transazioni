@@ -10,7 +10,6 @@ internal sealed class LogInUserCommandHandler : ICommandHandler<LogInUserCommand
     private readonly IUserRepository _userRepository;
     private readonly IJwtProvider _jwtProvider;
     private readonly IPasswordEncrypter _passwordEncrypter;
-    private readonly IUnitOfWork _unitOfWork;
 
     public LogInUserCommandHandler(IUserRepository userRepository,
                                    IJwtProvider jwtProvider,
@@ -49,10 +48,6 @@ internal sealed class LogInUserCommandHandler : ICommandHandler<LogInUserCommand
 
         var accessTokenResult = _jwtProvider.GenerateAccessToken(user);
         var refreshTokenResult = _jwtProvider.GenerateRefreshToken(user);
-
-        user.AddRefreshToken(refreshTokenResult.Value);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new LogInResponse(accessTokenResult.Value.Value, refreshTokenResult.Value.Value);
     }
