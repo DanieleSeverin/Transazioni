@@ -1,5 +1,9 @@
-﻿namespace Transazioni.API.Controllers.AccountRule;
+﻿using System.Text.Json.Serialization;
 
-public sealed record CreateAccountRuleRequest(Guid AccountId, string Query)
+namespace Transazioni.API.Controllers.AccountRule;
+
+public sealed record CreateAccountRuleRequest(
+    [property: JsonRequired] Guid AccountId,
+    [property: JsonRequired] string Query)
 {
 }

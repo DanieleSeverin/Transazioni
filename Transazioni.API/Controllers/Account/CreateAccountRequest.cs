@@ -1,3 +1,8 @@
-﻿namespace Transazioni.API.Controllers.Account;
+﻿using System.Text.Json.Serialization;
 
-public sealed record CreateAccountRequest(string AccountName, bool IsPatrimonial);
+namespace Transazioni.API.Controllers.Account;
+
+public sealed record CreateAccountRequest(
+    [property: JsonRequired] string AccountName,
+    [property: JsonRequired] bool IsPatrimonial);
+
