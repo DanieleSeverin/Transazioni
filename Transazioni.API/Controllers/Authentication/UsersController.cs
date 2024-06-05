@@ -103,4 +103,10 @@ public class UsersController : ControllerBase
         Response.Cookies.Delete(CookieNames.RefreshToken);
         return Ok();
     }
+
+    [HttpGet("IsLoggedIn")]
+    public IActionResult IsLoggedIn()
+    {
+        return Ok();
+    }
 }
