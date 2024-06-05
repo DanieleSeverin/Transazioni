@@ -1,3 +1,7 @@
-﻿namespace Transazioni.API.Controllers.Authentication;
+﻿using System.Text.Json.Serialization;
 
-public sealed record LogInUserRequest(string Email, string Password);
+namespace Transazioni.API.Controllers.Authentication;
+
+public sealed record LogInUserRequest(
+    [property: JsonRequired] string Email, 
+    [property: JsonRequired] string Password);

@@ -1,4 +1,6 @@
-﻿namespace Transazioni.Domain.Shared;
+﻿using Transazioni.Domain.CustomExceptions;
+
+namespace Transazioni.Domain.Shared;
 
 public record Currency
 {
@@ -13,7 +15,7 @@ public record Currency
     public static Currency FromCode(string code)
     {
         return All.FirstOrDefault(c => c.Code == code) ??
-               throw new ApplicationException($"The currency code '{code}' is invalid");
+               throw new CurrencyNotFoundException(code);
     }
 
     public static readonly IReadOnlyCollection<Currency> All = new[]
