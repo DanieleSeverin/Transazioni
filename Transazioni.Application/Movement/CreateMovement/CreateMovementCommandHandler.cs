@@ -45,7 +45,7 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
         // Create additional movements if peridiocity is not None
         if (peridiocity != Peridiocity.None)
         {
-            DateTime maxEndDate = new DateTime(2034, 12, 31);
+            DateTime maxEndDate = new DateTime(2034, 12, 31, 0, 0, 0, DateTimeKind.Utc);
             DateTime nextDate = startDate.GetNextPeridiocityDate(peridiocity);
 
             while (nextDate <= maxEndDate)
@@ -66,7 +66,7 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
             }
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(movement);
     }

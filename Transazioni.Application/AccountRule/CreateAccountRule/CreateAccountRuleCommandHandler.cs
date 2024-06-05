@@ -34,7 +34,7 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
 
         // Check if rule already exists
         List<AccountRules> accountRules = await _accountRuleRepository.GetAccountRules(cancellationToken);
-        AccountRules? accountRule = accountRules.FirstOrDefault(
+        AccountRules? accountRule = accountRules.Find(
             rule => rule.RuleContains.Value == request.query && 
                     rule.AccountName.Value == account.AccountName.Value);
 
@@ -48,7 +48,7 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
         AccountRules newRule = new(ruleContains, account.AccountName);
 
         _accountRuleRepository.Add(newRule);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(newRule);
     }

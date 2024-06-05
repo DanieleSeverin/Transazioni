@@ -7,8 +7,8 @@ namespace Transazioni.Domain.AccountRule;
 public class AccountRules
 {
     public AccountRuleId Id { get; init; }
-    public RuleContains RuleContains { get; init; } = null!;
-    public AccountName AccountName { get; init; } = null!;
+    public RuleContains RuleContains { get; init; }
+    public AccountName AccountName { get; init; }
 
     public AccountRules(RuleContains ruleContains, AccountName accountName)
     {
