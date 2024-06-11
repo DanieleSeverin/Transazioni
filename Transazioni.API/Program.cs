@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
     app.ApplyMigrations();
-    await app.SeedData();
+    //await app.SeedData();
 
     app.UseCors( opt =>
     {

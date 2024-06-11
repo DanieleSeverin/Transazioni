@@ -1,8 +1,11 @@
-﻿using Transazioni.Domain.Tokens;
+﻿using Transazioni.Domain.Account;
+using Transazioni.Domain.AccountRule;
+using Transazioni.Domain.Movement;
+using Transazioni.Domain.Tokens;
 
 namespace Transazioni.Domain.Users;
 
-public sealed class User
+public class User
 {
     public UserId Id { get; init; }
     public FirstName FirstName { get; private set; }
@@ -15,6 +18,15 @@ public sealed class User
 
     private readonly List<RefreshToken> _refreshTokens = new();
     public IReadOnlyList<RefreshToken> RefreshTokens => _refreshTokens.ToList();
+
+    private readonly List<Accounts> _accounts = new();
+    public IReadOnlyList<Accounts> Accounts => _accounts.ToList();
+
+    private readonly List<AccountRules> _accountRules = new();
+    public IReadOnlyList<AccountRules> AccountRules => _accountRules.ToList();
+    private readonly List<Movements> _movements = new();
+    public IReadOnlyList<Movements> Movements => _movements.ToList();
+
 
     private User(UserId id,
                  FirstName firstName,
@@ -29,9 +41,11 @@ public sealed class User
         Password = password;
     }
 
+    #pragma warning disable CS8618
     private User()
     {
     }
+    #pragma warning restore CS8618
 
     public static User Create(FirstName firstName, LastName lastName, Email email, Password password)
     {

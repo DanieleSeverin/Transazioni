@@ -35,7 +35,12 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<bool>("IsPatrimonial")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
                 });
@@ -55,7 +60,12 @@ namespace Transazioni.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AccountRules");
                 });
@@ -89,11 +99,16 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<int>("Peridiocity")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("DestinationAccountId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Movements");
                 });
@@ -156,6 +171,28 @@ namespace Transazioni.Infrastructure.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Transazioni.Domain.Account.Accounts", b =>
+                {
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("Accounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Transazioni.Domain.AccountRule.AccountRules", b =>
+                {
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("AccountRules")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Transazioni.Domain.Movement.Movements", b =>
                 {
                     b.HasOne("Transazioni.Domain.Account.Accounts", "Account")
@@ -167,6 +204,12 @@ namespace Transazioni.Infrastructure.Migrations
                     b.HasOne("Transazioni.Domain.Account.Accounts", "DestinationAccount")
                         .WithMany("DestinationMovements")
                         .HasForeignKey("DestinationAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("Movements")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -198,11 +241,13 @@ namespace Transazioni.Infrastructure.Migrations
 
                     b.Navigation("Money")
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Transazioni.Domain.Tokens.RefreshToken", b =>
                 {
-                    b.HasOne("Transazioni.Domain.Users.User", null)
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -220,6 +265,12 @@ namespace Transazioni.Infrastructure.Migrations
 
             modelBuilder.Entity("Transazioni.Domain.Users.User", b =>
                 {
+                    b.Navigation("AccountRules");
+
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Movements");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

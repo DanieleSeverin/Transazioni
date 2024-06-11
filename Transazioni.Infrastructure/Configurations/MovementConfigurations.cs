@@ -51,7 +51,11 @@ internal sealed class MovementConfigurations : IEntityTypeConfiguration<Movement
         builder.HasOne(movement => movement.DestinationAccount)
             .WithMany(account => account.DestinationMovements)
             .HasForeignKey(movement => movement.DestinationAccountId)
-            .HasPrincipalKey(account => account.Id)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasPrincipalKey(account => account.Id);
+
+        builder.HasOne(movement => movement.User)
+            .WithMany(user => user.Movements)
+            .HasForeignKey(movement => movement.UserId)
+            .HasPrincipalKey(user => user.Id);
     }
 }
