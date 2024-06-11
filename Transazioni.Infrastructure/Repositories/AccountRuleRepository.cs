@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Transazioni.Domain.AccountRule;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Infrastructure.Repositories;
 
@@ -17,8 +18,10 @@ internal class AccountRuleRepository : IAccountRuleRepository
         DbContext.Set<AccountRules>().Add(AccountRule);
     }
 
-    public async Task<List<AccountRules>> GetAccountRules(CancellationToken cancellationToken = default)
+    public async Task<List<AccountRules>> GetAccountRules(UserId UserId, CancellationToken cancellationToken = default)
     {
-        return await DbContext.Set<AccountRules>().ToListAsync(cancellationToken);
+        return await DbContext.Set<AccountRules>()
+            .Where(account => account.UserId == UserId)
+            .ToListAsync(cancellationToken);
     }
 }

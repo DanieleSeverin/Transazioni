@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.CheBanca.UploadCheBancaMovements;
 
 namespace Transazioni.API.Controllers.CheBanca;
@@ -23,7 +24,8 @@ public class CheBancaController : ControllerBase
         [FromQuery] string accountName,
         CancellationToken cancellationToken)
     {
-        var command = new UploadCheBancaMovementsCommand(file, accountName);
+        Guid userId = User.GetUserId();
+        var command = new UploadCheBancaMovementsCommand(file, accountName, userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

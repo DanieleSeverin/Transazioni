@@ -2,6 +2,7 @@
 using Transazioni.Domain.CheBanca;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Domain.Paypal;
 
@@ -14,7 +15,7 @@ public record PaypalMovements
     public string? Nome { get; set; }
     public string? NomeBanca { get; set; }
 
-    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId)
+    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId, UserId UserId)
     {
         if (Nome is null && NomeBanca is null && Descrizione is null)
         {
@@ -28,6 +29,7 @@ public record PaypalMovements
                              destinationAccountId: DestinationAccountId,
                              category: null,
                              isImported: true,
-                             peridiocity: Peridiocity.None);
+                             peridiocity: Peridiocity.None,
+                             userId: UserId);
     }
 }

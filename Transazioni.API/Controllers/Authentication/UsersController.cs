@@ -83,8 +83,7 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(
-        CancellationToken cancellationToken)
+    public ActionResult<string?> Refresh()
     {
         //TODO
         string? refreshToken = HttpContext.Request.Cookies[CookieNames.RefreshToken];
@@ -95,5 +94,19 @@ public class UsersController : ControllerBase
         }
 
         return Ok(refreshToken);
+    }
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete(CookieNames.AccessToken);
+        Response.Cookies.Delete(CookieNames.RefreshToken);
+        return Ok();
+    }
+
+    [HttpGet("IsLoggedIn")]
+    public IActionResult IsLoggedIn()
+    {
+        return Ok();
     }
 }

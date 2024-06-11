@@ -21,5 +21,10 @@ internal sealed class AccountRuleConfigurations : IEntityTypeConfiguration<Accou
         builder.Property(rule => rule.AccountName)
             .HasMaxLength(200)
             .HasConversion(accountName => accountName.Value, value => new AccountName(value));
+
+        builder.HasOne(account => account.User)
+            .WithMany(user => user.AccountRules)
+            .HasForeignKey(account => account.UserId)
+            .HasPrincipalKey(user => user.Id);
     }
 }

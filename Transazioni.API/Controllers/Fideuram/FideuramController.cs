@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Fideuram.UploadFideuramMovements;
 
 namespace Transazioni.API.Controllers.Fideuram;
@@ -23,7 +24,8 @@ public class FideuramController : ControllerBase
         [FromQuery] string accountName,
         CancellationToken cancellationToken)
     {
-        var command = new UploadFideuramMovementsCommand(file, accountName);
+        Guid userId = User.GetUserId();
+        var command = new UploadFideuramMovementsCommand(file, accountName, userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

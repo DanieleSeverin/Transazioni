@@ -32,8 +32,23 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
             .HasConversion(password => password.Value, value => new Password(value));
 
         builder.HasMany(user => user.RefreshTokens)
-            .WithOne()
+            .WithOne(token => token.User)
             .HasForeignKey(token => token.UserId)
+            .HasPrincipalKey(user => user.Id);
+
+        builder.HasMany(user => user.Accounts)
+            .WithOne(account => account.User)
+            .HasForeignKey(account => account.UserId)
+            .HasPrincipalKey(user => user.Id);
+
+        builder.HasMany(user => user.AccountRules)
+            .WithOne(rule => rule.User)
+            .HasForeignKey(rule => rule.UserId)
+            .HasPrincipalKey(user => user.Id);
+
+        builder.HasMany(user => user.Movements)
+            .WithOne(movement => movement.User)
+            .HasForeignKey(movement => movement.UserId)
             .HasPrincipalKey(user => user.Id);
     }
 }

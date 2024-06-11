@@ -1,6 +1,7 @@
 ﻿using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Domain.CheBanca;
 
@@ -13,7 +14,7 @@ public record CheBancaMovements
     public decimal? Uscite { get; init; }
     public string Divisa { get; init; } = null!;
 
-    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId)
+    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId, UserId UserId)
     {
         if(Entrate is null && Uscite is null)
         {
@@ -29,7 +30,8 @@ public record CheBancaMovements
                              destinationAccountId: DestinationAccountId, 
                              category: null,
                              isImported: true,
-                             peridiocity: Peridiocity.None);
+                             peridiocity: Peridiocity.None,
+                             userId: UserId);
     }
 
     public bool HasAmount()

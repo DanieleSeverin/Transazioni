@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.AccountRule.CreateAccountRule;
 using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Account;
@@ -23,7 +24,9 @@ public class AccountRulesController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreateAccountRule([FromBody] CreateAccountRuleRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateAccountRuleCommand(request.AccountId, request.Query);
+        Guid userId = User.GetUserId();
+
+        var command = new CreateAccountRuleCommand(request.AccountId, request.Query, userId);
         var createAccountRuleResult = await _sender.Send(command, cancellationToken);
 
         if (createAccountRuleResult.IsFailure && createAccountRuleResult.Error == AccountErrors.NotFound)

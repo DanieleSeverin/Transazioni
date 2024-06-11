@@ -3,6 +3,7 @@ using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Utilities.Pagination;
 using Transazioni.Domain.Utilities.Ordering;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Movement.GetMovements;
 
@@ -17,7 +18,9 @@ public class GetMovementsQueryHandler : IQueryHandler<GetMovementsQuery, Paginat
 
     public async Task<Result<PaginationResponse<GetMovementsResponse>>> Handle(GetMovementsQuery request, CancellationToken cancellationToken)
     {
-        List<GetMovementsResponse> movements = (await _movementsRepository.Get(cancellationToken))
+        UserId userId = new(request.userId);
+
+        List<GetMovementsResponse> movements = (await _movementsRepository.Get(userId, cancellationToken))
             .FilterByOriginAccountId(request.filter.originAccountId)
             .FilterByDestinationAccountId(request.filter.destinationAccountId)
             .GreaterOrEqualsThanDate(request.filter.startDate)

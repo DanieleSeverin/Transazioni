@@ -1,5 +1,6 @@
 ﻿using Transazioni.Domain.Account;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Domain.Movement;
 
@@ -14,9 +15,13 @@ public class Movements
     public MovementCategory? Category { get; init; }
     public bool IsImported { get; init; } = false;
     public Peridiocity Peridiocity { get; init; } = Peridiocity.None;
+    public UserId UserId { get; init; }
+
 
     public Accounts Account { get; init; } = null!;
     public Accounts DestinationAccount { get; init; } = null!;
+    public User User { get; init; } = null!;
+
 
     public Movements(DateTime date,
                      MovementDescription description,
@@ -25,7 +30,8 @@ public class Movements
                      AccountId destinationAccountId,
                      MovementCategory? category,
                      bool isImported,
-                     Peridiocity peridiocity)
+                     Peridiocity peridiocity, 
+                     UserId userId)
     {
         Id = MovementId.New();
         Date = date;
@@ -36,6 +42,7 @@ public class Movements
         Category = category;
         IsImported = isImported;
         Peridiocity = peridiocity;
+        UserId = userId;
     }
 
     private Movements() { }

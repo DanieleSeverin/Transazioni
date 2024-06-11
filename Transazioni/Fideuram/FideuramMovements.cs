@@ -1,6 +1,7 @@
 ﻿using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Domain.Fideuram;
 
@@ -15,7 +16,7 @@ public record FideuramMovements
     public string Valuta { get; set; } = null!;
     public decimal Importo { get; set; }
 
-    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId)
+    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId, UserId UserId)
     {
         return new Movements(Data,
                              new MovementDescription(Dettagli),
@@ -24,7 +25,8 @@ public record FideuramMovements
                              destinationAccountId: DestinationAccountId,
                              new MovementCategory(Categoria),
                              isImported: true,
-                             peridiocity: Peridiocity.None);
+                             peridiocity: Peridiocity.None,
+                             userId: UserId);
     }
 
 }

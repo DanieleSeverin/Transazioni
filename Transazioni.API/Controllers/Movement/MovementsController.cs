@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Movement.CreateMovement;
 using Transazioni.Application.Movement.GetMovements;
 using Transazioni.Domain.Utilities.Ordering;
@@ -55,7 +56,8 @@ public class MovementsController : ControllerBase
         OrderingConfigurations orderingConfigurations = new OrderingConfigurations(
             propertyName: orderBy, ascending: ascending ?? true);
 
-        var query = new GetMovementsQuery(filters, paginationConfigurations, orderingConfigurations);
+        Guid userId = User.GetUserId();
+        var query = new GetMovementsQuery(userId, filters, paginationConfigurations, orderingConfigurations);
         var getMovementsResult = await _sender.Send(query, cancellationToken);
 
         if (getMovementsResult.IsFailure)
@@ -69,7 +71,8 @@ public class MovementsController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementRequest Request, CancellationToken cancellationToken)
     {
-        var command = new CreateMovementCommand(Request);
+        Guid userId = User.GetUserId();
+        var command = new CreateMovementCommand(Request, userId);
         var createMovementResult = await _sender.Send(command, cancellationToken);
 
         if (createMovementResult.IsFailure)

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Santander.UploadSantanderMovements;
 
 namespace Transazioni.API.Controllers.Santander;
@@ -23,7 +24,8 @@ public class SantanderController : ControllerBase
         [FromQuery] string accountName,
         CancellationToken cancellationToken)
     {
-        var command = new UploadSantanderMovementsCommand(file, accountName);
+        Guid userId = User.GetUserId();
+        var command = new UploadSantanderMovementsCommand(file, accountName, userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

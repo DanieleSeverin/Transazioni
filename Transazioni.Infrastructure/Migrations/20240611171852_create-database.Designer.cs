@@ -12,8 +12,8 @@ using Transazioni.Infrastructure;
 namespace Transazioni.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240224161100_New_DB")]
-    partial class New_DB
+    [Migration("20240611171852_create-database")]
+    partial class createdatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,12 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<bool>("IsPatrimonial")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
                 });
@@ -57,7 +62,12 @@ namespace Transazioni.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AccountRules");
                 });
@@ -85,11 +95,22 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<Guid>("DestinationAccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsImported")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Peridiocity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("DestinationAccountId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Movements");
                 });
@@ -108,9 +129,6 @@ namespace Transazioni.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -118,8 +136,6 @@ namespace Transazioni.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("RefreshToken");
                 });
@@ -157,6 +173,28 @@ namespace Transazioni.Infrastructure.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Transazioni.Domain.Account.Accounts", b =>
+                {
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("Accounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Transazioni.Domain.AccountRule.AccountRules", b =>
+                {
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("AccountRules")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Transazioni.Domain.Movement.Movements", b =>
                 {
                     b.HasOne("Transazioni.Domain.Account.Accounts", "Account")
@@ -171,8 +209,17 @@ namespace Transazioni.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
+                        .WithMany("Movements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.OwnsOne("Transazioni.Domain.Shared.Money", "Money", b1 =>
                         {
+                            b1.Property<Guid>("MovementsId")
+                                .HasColumnType("uniqueidentifier");
+
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("decimal(18,2)")
                                 .HasColumnName("Amount");
@@ -182,7 +229,12 @@ namespace Transazioni.Infrastructure.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Currency");
 
+                            b1.HasKey("MovementsId");
+
                             b1.ToTable("Movements");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MovementsId");
                         });
 
                     b.Navigation("Account");
@@ -191,19 +243,15 @@ namespace Transazioni.Infrastructure.Migrations
 
                     b.Navigation("Money")
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Transazioni.Domain.Tokens.RefreshToken", b =>
                 {
-                    b.HasOne("Transazioni.Domain.Users.User", null)
+                    b.HasOne("Transazioni.Domain.Users.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Transazioni.Domain.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -219,6 +267,12 @@ namespace Transazioni.Infrastructure.Migrations
 
             modelBuilder.Entity("Transazioni.Domain.Users.User", b =>
                 {
+                    b.Navigation("AccountRules");
+
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Movements");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

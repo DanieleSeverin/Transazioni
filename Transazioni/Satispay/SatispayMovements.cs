@@ -1,6 +1,7 @@
 ﻿using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Domain.Satispay;
 
@@ -11,7 +12,7 @@ public record SatispayMovements
     public string Currency { get; set; } = null!;
     public decimal Amount { get; set; }
    
-    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId)
+    public Movements ToMovement(AccountId OriginAccountId, AccountId DestinationAccountId, UserId UserId)
     {
         return new Movements(Date,
                              new MovementDescription(Name),
@@ -20,6 +21,7 @@ public record SatispayMovements
                              destinationAccountId: DestinationAccountId,
                              category: null,
                              isImported: true,
-                             peridiocity: Peridiocity.None);
+                             peridiocity: Peridiocity.None,
+                             userId: UserId);
     }
 }

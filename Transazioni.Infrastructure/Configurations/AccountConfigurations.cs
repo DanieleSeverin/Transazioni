@@ -26,5 +26,10 @@ internal sealed class AccountConfigurations : IEntityTypeConfiguration<Accounts>
             .WithOne()
             .HasForeignKey(movement => movement.DestinationAccountId)
             .HasPrincipalKey(account => account.Id);
+
+        builder.HasOne(account => account.User)
+            .WithMany(user => user.Accounts)
+            .HasForeignKey(account => account.UserId)
+            .HasPrincipalKey(user => user.Id);
     }
 }

@@ -5,6 +5,7 @@ using Transazioni.Domain.Account;
 using Transazioni.Domain.AccountRule;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Santander;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Santander.UploadSantanderMovements;
 
@@ -39,8 +40,9 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
             return Result.Failure(error);
         }
 
-        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(cancellationToken);
-        List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
+        UserId userId = new(request.UserId);
+        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(userId, cancellationToken);
+        List<Accounts> accounts = await _accountRepository.GetAccounts(userId, cancellationToken);
 
         List<Accounts> accountsToCreate = new();
 
@@ -48,11 +50,11 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true);
+            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId);
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
+        await RemoveOldMovements(userId: userId, OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -72,16 +74,18 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
                 {
                     _movementsRepository.Add(movement.ToMovement(
                                 OriginAccountId: OriginAccount.Id,
-                                DestinationAccountId: NotAvalaible.Id));
+                                DestinationAccountId: NotAvalaible.Id,
+                                UserId: userId));
                     continue;
                 }
 
                 // Se non lo trovi, crealo e aggiungi movimento
-                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false);
+                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false, userId);
 
                 _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
-                            DestinationAccountId: NotAvalaible.Id));
+                            DestinationAccountId: NotAvalaible.Id, 
+                            UserId: userId));
 
                 accountsToCreate.Add(NotAvalaible);
                 continue;
@@ -94,14 +98,15 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false);
+                Account = new Accounts(AccountName, isPatrimonial: false, userId);
                 accountsToCreate.Add(Account);
             }
 
             // In ogni caso, aggiungi movimento
             _movementsRepository.Add(movement.ToMovement(
                 OriginAccountId: OriginAccount.Id,
-                DestinationAccountId: Account.Id));
+                DestinationAccountId: Account.Id,
+                UserId: userId));
         }
 
         _accountRepository.AddRange(accountsToCreate);
@@ -110,12 +115,12 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<SantanderMovements> movements, CancellationToken cancellationToken)
+    private async Task RemoveOldMovements(UserId userId, AccountId id, List<SantanderMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.DataMovimento).ToList();
         DateTime first = movements.First().DataMovimento;
         DateTime last = movements.Last().DataMovimento;
 
-        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
+        await _movementsRepository.RemoveDateRange(userId, id, first, last, cancellationToken);
     }
 }
