@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Satispay.UploadSatispayMovements;
 
 namespace Transazioni.API.Controllers.Satispay;
@@ -24,7 +25,8 @@ public class SatispayController : ControllerBase
         [FromQuery] string accountName,
         CancellationToken cancellationToken)
     {
-        var command = new UploadSatispayMovementsCommand(file, accountName);
+        Guid userId = User.GetUserId();
+        var command = new UploadSatispayMovementsCommand(file, accountName, userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

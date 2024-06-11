@@ -9,13 +9,14 @@ public class AccountRules
     public RuleContains RuleContains { get; init; }
     public AccountName AccountName { get; init; }
     public UserId UserId { get; init; }
-    public User User { get; init; }
+    public User User { get; init; } = null!;
 
-    public AccountRules(RuleContains ruleContains, AccountName accountName)
+    public AccountRules(RuleContains ruleContains, AccountName accountName, UserId userId)
     {
         Id = AccountRuleId.New();
         RuleContains = ruleContains;
         AccountName = accountName;
+        UserId = userId;
     }
 
     public bool Match(string MovementDescription)

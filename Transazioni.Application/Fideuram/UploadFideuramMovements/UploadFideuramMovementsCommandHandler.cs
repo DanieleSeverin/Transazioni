@@ -4,6 +4,7 @@ using Transazioni.Domain.Account;
 using Transazioni.Domain.AccountRule;
 using Transazioni.Domain.Fideuram;
 using Transazioni.Domain.Movement;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Fideuram.UploadFideuramMovements;
 
@@ -38,6 +39,7 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
             return Result.Failure(error);
         }
 
+        UserId userId = new(request.UserId);
         List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(cancellationToken);
         List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
 
@@ -47,7 +49,7 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true);
+            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId: userId);
             accountsToCreate.Add(OriginAccount);
         }
 
@@ -71,16 +73,18 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
                 {
                     _movementsRepository.Add(movement.ToMovement(
                                 OriginAccountId: OriginAccount.Id,
-                                DestinationAccountId: NotAvalaible.Id));
+                                DestinationAccountId: NotAvalaible.Id, 
+                                UserId: userId));
                     continue;
                 }
 
                 // Se non lo trovi, crealo e aggiungi movimento
-                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false);
+                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false, userId);
 
                 _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
-                            DestinationAccountId: NotAvalaible.Id));
+                            DestinationAccountId: NotAvalaible.Id, 
+                            UserId: userId));
 
                 accountsToCreate.Add(NotAvalaible);
                 continue;
@@ -93,14 +97,15 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false);
+                Account = new Accounts(AccountName, isPatrimonial: false, userId);
                 accountsToCreate.Add(Account);
             }
 
             // In ogni caso, aggiungi movimento
             _movementsRepository.Add(movement.ToMovement(
                 OriginAccountId: OriginAccount.Id,
-                DestinationAccountId: Account.Id));
+                DestinationAccountId: Account.Id, 
+                UserId: userId));
         }
 
         _accountRepository.AddRange(accountsToCreate);

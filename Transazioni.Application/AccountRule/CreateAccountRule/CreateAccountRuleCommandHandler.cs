@@ -3,6 +3,7 @@ using Transazioni.Application.Abstractions.Messaging;
 using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.AccountRule;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.AccountRule.CreateAccountRule;
 
@@ -44,8 +45,9 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
         }
 
         // Create rule
+        UserId userId = new(request.UserId);
         RuleContains ruleContains = new(request.query);
-        AccountRules newRule = new(ruleContains, account.AccountName);
+        AccountRules newRule = new(ruleContains, account.AccountName, userId);
 
         _accountRuleRepository.Add(newRule);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

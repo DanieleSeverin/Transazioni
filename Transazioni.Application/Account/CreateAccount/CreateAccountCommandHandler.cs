@@ -1,6 +1,7 @@
 ﻿using Transazioni.Application.Abstractions.Messaging;
 using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Account;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Account.CreateAccount;
 
@@ -26,8 +27,9 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountCommand,
             return Result.Failure<Accounts>(AccountErrors.AlreadyExists);
         }
 
+        UserId userId = new(request.UserId);
         AccountName accountName = new AccountName(request.AccountName);
-        Accounts account = new Accounts(accountName, request.IsPatrimonial);
+        Accounts account = new Accounts(accountName, request.IsPatrimonial, userId);
         _accountRepository.Add(account);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

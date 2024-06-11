@@ -20,7 +20,7 @@ public class Movements
 
     public Accounts Account { get; init; } = null!;
     public Accounts DestinationAccount { get; init; } = null!;
-    public User User { get; init; }
+    public User User { get; init; } = null!;
 
 
     public Movements(DateTime date,
@@ -30,7 +30,8 @@ public class Movements
                      AccountId destinationAccountId,
                      MovementCategory? category,
                      bool isImported,
-                     Peridiocity peridiocity)
+                     Peridiocity peridiocity, 
+                     UserId userId)
     {
         Id = MovementId.New();
         Date = date;
@@ -41,6 +42,7 @@ public class Movements
         Category = category;
         IsImported = isImported;
         Peridiocity = peridiocity;
+        UserId = userId;
     }
 
     private Movements() { }

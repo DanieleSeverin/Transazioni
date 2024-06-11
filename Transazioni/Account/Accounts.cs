@@ -15,13 +15,14 @@ public class Accounts : IComparable, IComparable<Accounts>
 
     private readonly List<Movements> _destinationMovements = new List<Movements>();
     public IReadOnlyList<Movements> DestinationMovements => _destinationMovements.ToList();
-    public User User { get; init; }
+    public User User { get; init; } = null!;
 
-    public Accounts(AccountName accountName, bool isPatrimonial)
+    public Accounts(AccountName accountName, bool isPatrimonial, UserId userId)
     {
         Id = AccountId.New();
         AccountName = accountName;
         IsPatrimonial = isPatrimonial;
+        UserId = userId;
     }
 
     public void AddMovement(Movements movement)

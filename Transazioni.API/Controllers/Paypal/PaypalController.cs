@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Paypal.UploadPaypalMovements;
 
 namespace Transazioni.API.Controllers.Paypal;
@@ -24,7 +25,8 @@ public class PaypalController : ControllerBase
         [FromQuery] string accountName,
         CancellationToken cancellationToken)
     {
-        var command = new UploadPaypalMovementsCommand(file, accountName);
+        Guid userId = User.GetUserId();
+        var command = new UploadPaypalMovementsCommand(file, accountName, userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

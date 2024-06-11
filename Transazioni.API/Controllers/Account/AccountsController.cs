@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Transazioni.API.Extensions;
 using Transazioni.Application.Account.CreateAccount;
 using Transazioni.Application.Account.GetAccounts;
 using Transazioni.Domain.Abstractions;
@@ -42,7 +43,8 @@ public class AccountsController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreatePatrimonialAccount([FromBody] CreateAccountRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateAccountCommand(request.AccountName, request.IsPatrimonial);
+        Guid userId = User.GetUserId();
+        var command = new CreateAccountCommand(request.AccountName, request.IsPatrimonial, userId);
         var createAccountsResult = await _sender.Send(command, cancellationToken);
 
         if(createAccountsResult.IsFailure)

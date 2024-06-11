@@ -5,6 +5,7 @@ using Transazioni.Domain.Account;
 using Transazioni.Domain.AccountRule;
 using Transazioni.Domain.CheBanca;
 using Transazioni.Domain.Movement;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.CheBanca.UploadCheBancaMovements;
 
@@ -41,6 +42,7 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
 
         List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(cancellationToken);
         List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
+        UserId userId = new(request.UserId);
 
         List<Accounts> accountsToCreate = new();
 
@@ -48,7 +50,7 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true);
+            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId);
             accountsToCreate.Add(OriginAccount);
         }
 
@@ -77,17 +79,19 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
                 {
                     _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
-                            DestinationAccountId: NotAvalaible.Id));
+                            DestinationAccountId: NotAvalaible.Id,
+                            UserId: userId));
 
                     continue;
                 }
 
                 // Se non lo trovi, crealo e aggiungi movimento
-                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false);
+                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false, userId);
 
                 _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
-                            DestinationAccountId: NotAvalaible.Id));
+                            DestinationAccountId: NotAvalaible.Id,
+                            UserId: userId));
 
                 accountsToCreate.Add(NotAvalaible);
                 continue;
@@ -100,14 +104,15 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false);
+                Account = new Accounts(AccountName, isPatrimonial: false, userId);
                 accountsToCreate.Add(Account);
             }
 
             // In ogni caso, aggiungi movimento
             _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
-                            DestinationAccountId: Account.Id));
+                            DestinationAccountId: Account.Id,
+                            UserId: userId));
         }
 
         _accountRepository.AddRange(accountsToCreate);

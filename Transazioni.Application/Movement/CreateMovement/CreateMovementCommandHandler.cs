@@ -3,6 +3,7 @@ using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Shared;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Movement.CreateMovement;
 
@@ -21,7 +22,7 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
     public async Task<Result<Movements>> Handle(CreateMovementCommand request, CancellationToken cancellationToken)
     {
         //TODO: add validations 
-
+        UserId userId = new(request.UserId);
         DateTime startDate = request.Request.date.Date;
         MovementDescription description = new MovementDescription(request.Request.description);
         Money amount = new Money(request.Request.amount, Currency.FromCode(request.Request.currency));
@@ -38,7 +39,8 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
                                            destinationAccountId,
                                            category,
                                            isImported : false,
-                                           peridiocity);
+                                           peridiocity,
+                                           userId);
 
         _movementsRepository.Add(movement);
 
@@ -60,7 +62,8 @@ public class CreateMovementCommandHandler : ICommandHandler<CreateMovementComman
                                                        destinationAccountId,
                                                        category,
                                                        isImported: false,
-                                                       peridiocity);
+                                                       peridiocity, 
+                                                       userId);
                 _movementsRepository.Add(nextMovement);
                 nextDate = nextDate.GetNextPeridiocityDate(peridiocity);
             }

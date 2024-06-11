@@ -3,6 +3,7 @@ using Transazioni.Domain.Abstractions;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
 using Transazioni.Domain.Satispay;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Application.Satispay.UploadSatispayMovements;
 
@@ -34,6 +35,7 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
             return Result.Failure(error);
         }
 
+        UserId userId = new(request.UserId);
         List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
 
         List<Accounts> accountsToCreate = new();
@@ -42,7 +44,7 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true);
+            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId);
             accountsToCreate.Add(OriginAccount);
         }
 
@@ -59,14 +61,15 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false);
+                Account = new Accounts(AccountName, isPatrimonial: false, userId);
                 accountsToCreate.Add(Account);
             }
 
             // In ogni caso, aggiungi movimento
             _movementsRepository.Add(movement.ToMovement(
                     OriginAccountId: OriginAccount.Id,
-                    DestinationAccountId: Account.Id));
+                    DestinationAccountId: Account.Id,
+                    UserId: userId));
         }
 
         _accountRepository.AddRange(accountsToCreate);
