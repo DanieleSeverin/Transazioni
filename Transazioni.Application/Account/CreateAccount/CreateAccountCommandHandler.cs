@@ -19,15 +19,15 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountCommand,
 
     public async Task<Result<Accounts>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
+        UserId userId = new(request.UserId);
         AccountName alreadyExistsAccountName = new AccountName(request.AccountName);
-        Accounts? alreadyExistsAccount = await _accountRepository.GetByName(alreadyExistsAccountName, cancellationToken);
+        Accounts? alreadyExistsAccount = await _accountRepository.GetByName(userId, alreadyExistsAccountName, cancellationToken);
 
         if(alreadyExistsAccount is not null)
         {
             return Result.Failure<Accounts>(AccountErrors.AlreadyExists);
         }
 
-        UserId userId = new(request.UserId);
         AccountName accountName = new AccountName(request.AccountName);
         Accounts account = new Accounts(accountName, request.IsPatrimonial, userId);
         _accountRepository.Add(account);

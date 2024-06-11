@@ -5,6 +5,7 @@ using Transazioni.Domain.Utilities.Pagination;
 namespace Transazioni.Application.Movement.GetMovements;
 
 public sealed record GetMovementsQuery(
+    Guid userId,
     GetMovementFilter filter, 
     PaginationConfigurations paginationConfigurations,
     OrderingConfigurations orderingConfigurations) 

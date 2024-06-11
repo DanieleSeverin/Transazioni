@@ -40,9 +40,9 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
             return Result.Failure(error);
         }
 
-        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(cancellationToken);
-        List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
         UserId userId = new(request.UserId);
+        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(userId, cancellationToken);
+        List<Accounts> accounts = await _accountRepository.GetAccounts(userId, cancellationToken);
 
         List<Accounts> accountsToCreate = new();
 
@@ -54,7 +54,7 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
+        await RemoveOldMovements(userId: userId, OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -121,12 +121,12 @@ public class UploadCheBancaMovementsCommandHandler : ICommandHandler<UploadCheBa
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<CheBancaMovements> movements, CancellationToken cancellationToken)
+    private async Task RemoveOldMovements(UserId userId, AccountId id, List<CheBancaMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.DataContabile).ToList();
         DateTime first = movements.First().DataContabile;
         DateTime last = movements.Last().DataContabile;
 
-        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
+        await _movementsRepository.RemoveDateRange(userId, id, first, last, cancellationToken);
     }
 }

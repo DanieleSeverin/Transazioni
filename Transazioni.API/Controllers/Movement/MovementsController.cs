@@ -56,7 +56,8 @@ public class MovementsController : ControllerBase
         OrderingConfigurations orderingConfigurations = new OrderingConfigurations(
             propertyName: orderBy, ascending: ascending ?? true);
 
-        var query = new GetMovementsQuery(filters, paginationConfigurations, orderingConfigurations);
+        Guid userId = User.GetUserId();
+        var query = new GetMovementsQuery(userId, filters, paginationConfigurations, orderingConfigurations);
         var getMovementsResult = await _sender.Send(query, cancellationToken);
 
         if (getMovementsResult.IsFailure)

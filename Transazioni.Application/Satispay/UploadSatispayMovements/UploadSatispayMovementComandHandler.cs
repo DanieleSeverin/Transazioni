@@ -36,7 +36,7 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
         }
 
         UserId userId = new(request.UserId);
-        List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
+        List<Accounts> accounts = await _accountRepository.GetAccounts(userId, cancellationToken);
 
         List<Accounts> accountsToCreate = new();
 
@@ -48,7 +48,7 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
+        await RemoveOldMovements(userId, OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -78,12 +78,12 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<SatispayMovements> movements, CancellationToken cancellationToken)
+    private async Task RemoveOldMovements(UserId userId, AccountId id, List<SatispayMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.Date).ToList();
         DateTime first = movements.First().Date;
         DateTime last = movements.Last().Date;
 
-        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
+        await _movementsRepository.RemoveDateRange(userId, id, first, last, cancellationToken);
     }
 }

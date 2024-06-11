@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using Transazioni.Domain.Account;
 using Transazioni.Domain.Movement;
+using Transazioni.Domain.Users;
 
 namespace Transazioni.Infrastructure.Repositories;
 
@@ -19,16 +19,17 @@ internal class MovementsRepository : IMovementsRepository
         DbContext.Set<Movements>().Add(movement);
     }
 
-    public async Task<List<Movements>> Get(CancellationToken cancellationToken = default)
+    public async Task<List<Movements>> Get(UserId UserId, CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<Movements>()
-            .Include(x => x.Account)
-            .Include(x => x.DestinationAccount)
+            .Include(account => account.Account)
+            .Include(account => account.DestinationAccount)
+            .Where(account => account.UserId == UserId)
             .AsSingleQuery()
             .ToListAsync(cancellationToken);
     }
 
-    public async Task RemoveDateRange(AccountId AccountId, DateTime StartDate, DateTime EndDate, CancellationToken cancellationToken)
+    public async Task RemoveDateRange(UserId UserId, AccountId AccountId, DateTime StartDate, DateTime EndDate, CancellationToken cancellationToken)
     {
         if(StartDate > EndDate)
         {
@@ -36,7 +37,10 @@ internal class MovementsRepository : IMovementsRepository
         }
 
         var movements = await DbContext.Set<Movements>()
-            .Where(x => x.AccountId == AccountId && x.Date >= StartDate && x.Date <= EndDate)
+            .Where(account => account.UserId == UserId && 
+                              account.AccountId == AccountId && 
+                              account.Date >= StartDate && 
+                              account.Date <= EndDate)
             .ToListAsync(cancellationToken);
 
         var moneys = movements.Select(x => x.Money);

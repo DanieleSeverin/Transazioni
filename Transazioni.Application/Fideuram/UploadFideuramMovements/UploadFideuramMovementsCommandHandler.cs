@@ -40,8 +40,8 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
         }
 
         UserId userId = new(request.UserId);
-        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(cancellationToken);
-        List<Accounts> accounts = await _accountRepository.GetAccounts(cancellationToken);
+        List<AccountRules> rules = await _accountRuleRepository.GetAccountRules(userId, cancellationToken);
+        List<Accounts> accounts = await _accountRepository.GetAccounts(userId, cancellationToken);
 
         List<Accounts> accountsToCreate = new();
 
@@ -53,7 +53,7 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
             accountsToCreate.Add(OriginAccount);
         }
 
-        await RemoveOldMovements(OriginAccount.Id, movements, cancellationToken);
+        await RemoveOldMovements(userId, OriginAccount.Id, movements, cancellationToken);
 
         foreach (var movement in movements)
         {
@@ -114,12 +114,12 @@ public class UploadFideuramMovementsCommandHandler : ICommandHandler<UploadFideu
         return Result.Success();
     }
 
-    private async Task RemoveOldMovements(AccountId id, List<FideuramMovements> movements, CancellationToken cancellationToken)
+    private async Task RemoveOldMovements(UserId userId, AccountId id, List<FideuramMovements> movements, CancellationToken cancellationToken)
     {
         movements = movements.OrderBy(x => x.Data).ToList();
         DateTime first = movements.First().Data;
         DateTime last = movements.Last().Data;
 
-        await _movementsRepository.RemoveDateRange(id, first, last, cancellationToken);
+        await _movementsRepository.RemoveDateRange(userId, id, first, last, cancellationToken);
     }
 }

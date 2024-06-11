@@ -23,7 +23,8 @@ public class AccountsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAccounts([FromQuery] bool? onlyPatrimonial, CancellationToken cancellationToken)
     {
-        var query = new GetAccountsQuery();
+        Guid userId = User.GetUserId();
+        var query = new GetAccountsQuery(userId);
 
         var accountsResult = await _sender.Send(query, cancellationToken);
 

@@ -25,8 +25,9 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
     public async Task<Result<AccountRules>> Handle(CreateAccountRuleCommand request, CancellationToken cancellationToken)
     {
         // Check if account exists
+        UserId userId = new(request.UserId);
         AccountId accountId = new(request.AccountId);
-        Accounts? account = await _accountRepository.GetById(accountId, cancellationToken);
+        Accounts? account = await _accountRepository.GetById(userId, accountId, cancellationToken);
 
         if (account is null)
         {
@@ -34,7 +35,7 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
         }
 
         // Check if rule already exists
-        List<AccountRules> accountRules = await _accountRuleRepository.GetAccountRules(cancellationToken);
+        List<AccountRules> accountRules = await _accountRuleRepository.GetAccountRules(userId, cancellationToken);
         AccountRules? accountRule = accountRules.Find(
             rule => rule.RuleContains.Value == request.query && 
                     rule.AccountName.Value == account.AccountName.Value);
@@ -45,7 +46,6 @@ public class CreateAccountRuleCommandHandler : ICommandHandler<CreateAccountRule
         }
 
         // Create rule
-        UserId userId = new(request.UserId);
         RuleContains ruleContains = new(request.query);
         AccountRules newRule = new(ruleContains, account.AccountName, userId);
 
