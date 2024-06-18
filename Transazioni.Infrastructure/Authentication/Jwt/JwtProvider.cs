@@ -38,7 +38,8 @@ internal sealed class JwtProvider : IJwtProvider
             _options.Audience,
             claims,
             null,
-            DateTime.UtcNow.AddHours(1),
+            //DateTime.UtcNow.AddHours(1),
+            DateTime.UtcNow.AddMinutes(1),
             signingCredentials);
 
         string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
@@ -53,5 +54,31 @@ internal sealed class JwtProvider : IJwtProvider
         rng.GetBytes(randomNumber);
         string refreshToken = Convert.ToBase64String(randomNumber);
         return Result.Success(new RefreshToken(refreshToken, user.Id));
+    }
+
+    public Result<Guid> GetUserIdFromJwt(string accessToken)
+    {
+        JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+        if (handler.ReadToken(accessToken) is not JwtSecurityToken jsonToken)
+        {
+            return Result.Failure<Guid>(JwtErrors.IsNotJwt);
+        }
+
+        var userIdClaim = jsonToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier || claim.Type == "sub");
+
+        if (userIdClaim == null)
+        {
+            return Result.Failure<Guid>(JwtErrors.UserIdClaimNotFound);
+        }
+
+        if (Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Result.Success(userId);
+        }
+        else
+        {
+            return Result.Failure<Guid>(UserErrors.InvalidUserId);
+        }
     }
 }

@@ -17,15 +17,17 @@ internal sealed class UserRepository : IUserRepository
         DbContext.Set<User>().Add(user);
     }
 
-    public async Task<User?> GetByAsync(UserId id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<User>()
+            .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<User>()
+            .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(b => b.Email == email, cancellationToken);
     }
 }
