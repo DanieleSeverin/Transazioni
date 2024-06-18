@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transazioni.Infrastructure;
 
@@ -11,9 +12,10 @@ using Transazioni.Infrastructure;
 namespace Transazioni.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240618213314_Added_Refresh_Token_Valid_Field")]
+    partial class Added_Refresh_Token_Valid_Field
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,12 +125,6 @@ namespace Transazioni.Infrastructure.Migrations
 
                     b.Property<DateTime>("ExpireAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("InvalidatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InvalidityReason")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");

@@ -9,6 +9,9 @@ public class RefreshToken
     public DateTime CreatedAt { get; init; }
     public DateTime ExpireAt { get; init; }
     public UserId UserId { get; init; }
+    public bool Valid { get; private set; }
+    public string? InvalidityReason { get; private set; }
+    public DateTime? InvalidatedAt { get; private set; }
 
     public User User { get; init; } = null!;
 
@@ -17,9 +20,21 @@ public class RefreshToken
         Id = RefreshTokenId.New();
         Value = value;
         CreatedAt = DateTime.Now;
-        ExpireAt = CreatedAt.AddHours(24);
+        ExpireAt = CreatedAt.AddDays(7);
         UserId = userId;
+        Valid = true;
     }
 
+    #pragma warning disable CS8618
     private RefreshToken() { }
+    #pragma warning restore CS8618
+
+    public void Invalidate(string? reason = null)
+    {
+        if (!Valid) throw new RefreshTokenAlreadyInvalidException(Id);
+
+        Valid = false;
+        InvalidityReason = reason;
+        InvalidatedAt = DateTime.Now;
+    }
 }

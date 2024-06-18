@@ -6,6 +6,7 @@ namespace Transazioni.Application.Abstractions.Authentication;
 
 public interface IJwtProvider
 {
-    Result<AccessToken> GenerateAccessToken(User user);
-    Result<RefreshToken> GenerateRefreshToken(User user);
+    public abstract Result<AccessToken> GenerateAccessToken(User user);
+    public abstract Result<RefreshToken> GenerateRefreshToken(User user);
+    public abstract Result<Guid> GetUserIdFromJwt(string accessToken);
 }

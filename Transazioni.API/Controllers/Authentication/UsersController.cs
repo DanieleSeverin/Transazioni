@@ -2,9 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using Transazioni.API.Costants;
+using Transazioni.Application.Auth.Logout;
+using Transazioni.Application.Auth.RefreshJwt;
 using Transazioni.Application.Users.LogInUser;
 using Transazioni.Application.Users.RegisterUser;
+using Transazioni.Domain.Abstractions;
+using Transazioni.Domain.Tokens;
 
 namespace Transazioni.API.Controllers.Authentication;
 
@@ -83,22 +88,72 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public ActionResult<string?> Refresh()
+    public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
     {
-        //TODO
+        string? accessToken = HttpContext.Request.Cookies[CookieNames.AccessToken];
         string? refreshToken = HttpContext.Request.Cookies[CookieNames.RefreshToken];
 
-        if (refreshToken is null)
+        if(string.IsNullOrWhiteSpace(accessToken))
         {
-            return Unauthorized();
+            return BadRequest(Result.Failure(JwtErrors.MissingJwt));
         }
 
-        return Ok(refreshToken);
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return BadRequest(Result.Failure(JwtErrors.MissingJwt));
+        }
+
+        var command = new RefreshJwtCommand(AccessToken: accessToken, RefreshToken: refreshToken);
+        var result = await _sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return Unauthorized(result.Error);
+        }
+
+        HttpContext.Response.Cookies.Append(
+            CookieNames.AccessToken,
+            result.Value.AccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+
+        HttpContext.Response.Cookies.Append(
+            CookieNames.RefreshToken,
+            result.Value.RefreshToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Path = "/api/users/refresh",
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
+
+        return Ok();
     }
 
     [HttpPost("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
+        string? accessToken = HttpContext.Request.Cookies[CookieNames.AccessToken];
+
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return BadRequest(Result.Failure(JwtErrors.MissingJwt));
+        }
+
+        var command = new LogoutCommand(accessToken);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return StatusCode(500, result.Error);
+        }
+
         Response.Cookies.Delete(CookieNames.AccessToken);
         Response.Cookies.Delete(CookieNames.RefreshToken);
         return Ok();
