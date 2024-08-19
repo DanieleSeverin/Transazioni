@@ -15,12 +15,14 @@ public class RefreshToken
 
     public User User { get; init; } = null!;
 
+    private readonly int _durationDays = 7;
+
     public RefreshToken(string value, UserId userId)
     {
         Id = RefreshTokenId.New();
         Value = value;
         CreatedAt = DateTime.Now;
-        ExpireAt = CreatedAt.AddDays(7);
+        ExpireAt = CreatedAt.AddDays(_durationDays);
         UserId = userId;
         Valid = true;
     }

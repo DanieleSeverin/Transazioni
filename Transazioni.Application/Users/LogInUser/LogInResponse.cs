@@ -1,3 +1,5 @@
-﻿namespace Transazioni.Application.Users.LogInUser;
+﻿using Transazioni.Domain.Tokens;
 
-public sealed record LogInResponse(string AccessToken, string RefreshToken);
+namespace Transazioni.Application.Users.LogInUser;
+
+public sealed record LogInResponse(AccessToken AccessToken, RefreshToken RefreshToken);

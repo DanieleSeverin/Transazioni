@@ -60,13 +60,12 @@ internal sealed class RefreshJwtCommandHandler : ICommandHandler<RefreshJwtComma
         }
 
         var accessTokenResult = _jwtProvider.GenerateAccessToken(user);
-        var refreshTokenResult = _jwtProvider.GenerateRefreshToken(user);
-
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<LogInResponse>(accessTokenResult.Error!);
         }
 
+        var refreshTokenResult = _jwtProvider.GenerateRefreshToken(user);
         if (refreshTokenResult.IsFailure)
         {
             return Result.Failure<LogInResponse>(refreshTokenResult.Error!);
@@ -75,6 +74,6 @@ internal sealed class RefreshJwtCommandHandler : ICommandHandler<RefreshJwtComma
         user.AddRefreshToken(refreshTokenResult.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new LogInResponse(accessTokenResult.Value.Value, refreshTokenResult.Value.Value);
+        return new LogInResponse(accessTokenResult.Value, refreshTokenResult.Value);
     }
 }

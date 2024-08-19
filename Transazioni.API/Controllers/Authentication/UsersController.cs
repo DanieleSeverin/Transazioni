@@ -64,7 +64,7 @@ public class UsersController : ControllerBase
 
         HttpContext.Response.Cookies.Append(
             CookieNames.AccessToken,
-            result.Value.AccessToken,
+            result.Value.AccessToken.Value,
             new CookieOptions
             {
                 HttpOnly = true,
@@ -74,7 +74,7 @@ public class UsersController : ControllerBase
 
         HttpContext.Response.Cookies.Append(
             CookieNames.RefreshToken,
-            result.Value.RefreshToken,
+            result.Value.RefreshToken.Value,
             new CookieOptions
             {
                 HttpOnly = true,
@@ -83,7 +83,9 @@ public class UsersController : ControllerBase
                 Secure = true
             });
 
-        return Ok();
+        AuthResponse response = new(result.Value.AccessToken.ExpireAt, result.Value.RefreshToken.ExpireAt);
+
+        return Ok(response);
     }
 
     [AllowAnonymous]
@@ -95,12 +97,12 @@ public class UsersController : ControllerBase
 
         if(string.IsNullOrWhiteSpace(accessToken))
         {
-            return BadRequest(Result.Failure(JwtErrors.MissingJwt));
+            return StatusCode(403, Result.Failure(JwtErrors.MissingJwt));
         }
 
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
-            return BadRequest(Result.Failure(JwtErrors.MissingJwt));
+            return StatusCode(403, Result.Failure(JwtErrors.MissingJwt));
         }
 
         var command = new RefreshJwtCommand(AccessToken: accessToken, RefreshToken: refreshToken);
@@ -108,12 +110,12 @@ public class UsersController : ControllerBase
 
         if (result.IsFailure)
         {
-            return Unauthorized(result.Error);
+            return StatusCode(403, result.Error);
         }
 
         HttpContext.Response.Cookies.Append(
             CookieNames.AccessToken,
-            result.Value.AccessToken,
+            result.Value.AccessToken.Value,
             new CookieOptions
             {
                 HttpOnly = true,
@@ -123,7 +125,7 @@ public class UsersController : ControllerBase
 
         HttpContext.Response.Cookies.Append(
             CookieNames.RefreshToken,
-            result.Value.RefreshToken,
+            result.Value.RefreshToken.Value,
             new CookieOptions
             {
                 HttpOnly = true,
@@ -132,7 +134,9 @@ public class UsersController : ControllerBase
                 Secure = true
             });
 
-        return Ok();
+        AuthResponse response = new(result.Value.AccessToken.ExpireAt, result.Value.RefreshToken.ExpireAt);
+
+        return Ok(response);
     }
 
     [HttpPost("logout")]
