@@ -16,7 +16,7 @@ public static class SeedDataExtensions
 
         var users = await DbContext.Set<User>().ToListAsync();
 
-        if (users.Any())
+        if (!users.Any())
         {
             return;
         }

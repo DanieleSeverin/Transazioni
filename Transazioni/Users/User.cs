@@ -16,6 +16,7 @@ public class User
 
     public Password Password { get; private set; }
 
+    #pragma warning disable S2365
     private readonly List<RefreshToken> _refreshTokens = new();
     public IReadOnlyList<RefreshToken> RefreshTokens => _refreshTokens.ToList();
 
@@ -26,7 +27,7 @@ public class User
     public IReadOnlyList<AccountRules> AccountRules => _accountRules.ToList();
     private readonly List<Movements> _movements = new();
     public IReadOnlyList<Movements> Movements => _movements.ToList();
-
+    #pragma warning disable S2365
 
     private User(UserId id,
                  FirstName firstName,
@@ -56,6 +57,7 @@ public class User
 
     public void AddRefreshToken(RefreshToken refreshToken)
     {
+        _refreshTokens.Where(t => t.Valid).ToList().ForEach(token => token.Invalidate("Added new Refresh Token."));
         _refreshTokens.Add(refreshToken);
     }
 }

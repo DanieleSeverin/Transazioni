@@ -10,14 +10,17 @@ internal sealed class LogInUserCommandHandler : ICommandHandler<LogInUserCommand
     private readonly IUserRepository _userRepository;
     private readonly IJwtProvider _jwtProvider;
     private readonly IPasswordEncrypter _passwordEncrypter;
+    private readonly IUnitOfWork _unitOfWork;
 
     public LogInUserCommandHandler(IUserRepository userRepository,
                                    IJwtProvider jwtProvider,
-                                   IPasswordEncrypter passwordEncrypter)
+                                   IPasswordEncrypter passwordEncrypter,
+                                   IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
         _jwtProvider = jwtProvider;
         _passwordEncrypter = passwordEncrypter;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<LogInResponse>> Handle(
@@ -26,29 +29,35 @@ internal sealed class LogInUserCommandHandler : ICommandHandler<LogInUserCommand
     {
         Email email = new Email(request.Email);
 
-        User? user = await _userRepository.GetByEmailAsync(email);
+        User? user = await _userRepository.GetByEmailAsync(email, cancellationToken);
 
         if (user is null)
         {
             return Result.Failure<LogInResponse>(UserErrors.InvalidCredentials);
         }
 
-        (bool verified, bool needsUpgrade) =
-            _passwordEncrypter.Check(user.Password.Value, request.Password);
+        (bool verified, _) = _passwordEncrypter.Check(user.Password.Value, request.Password);
 
         if (!verified)
         {
             return Result.Failure<LogInResponse>(UserErrors.InvalidCredentials);
         }
 
-        if (needsUpgrade)
+        var accessTokenResult = _jwtProvider.GenerateAccessToken(user);
+        if(accessTokenResult.IsFailure)
         {
-            // TODO
+            return Result.Failure<LogInResponse>(accessTokenResult.Error!);
         }
 
-        var accessTokenResult = _jwtProvider.GenerateAccessToken(user);
         var refreshTokenResult = _jwtProvider.GenerateRefreshToken(user);
+        if (refreshTokenResult.IsFailure)
+        {
+            return Result.Failure<LogInResponse>(refreshTokenResult.Error!);
+        }
 
-        return new LogInResponse(accessTokenResult.Value.Value, refreshTokenResult.Value.Value);
+        user.AddRefreshToken(refreshTokenResult.Value);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new LogInResponse(accessTokenResult.Value, refreshTokenResult.Value);
     }
 }
