@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.ConfigureSwagger();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 
 builder.Services.AddHealthChecks();
 

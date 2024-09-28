@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Transazioni.Application.Abstractions.Authentication;
 using Transazioni.Application.CheBanca.UploadCheBancaMovements;
 using Transazioni.Application.Fideuram.UploadFideuramMovements;
@@ -27,21 +29,31 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IWebHostEnvironment env)
     {
-        AddPersistence(services, configuration);
+        AddPersistence(services, configuration, env);
 
         return services;
     }
 
-    private static void AddPersistence(IServiceCollection services, IConfiguration configuration)
+    private static void AddPersistence(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
-        //var connectionString = builder.Configuration.GetConnectionString("Database") ??
-        //            throw new ArgumentNullException(nameof(builder.Configuration));
+        string connectionString;
 
-        var connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database") ??
-            configuration.GetConnectionString("POSTGRESQLCONNSTR_Database") ??
-            throw new ArgumentNullException(nameof(configuration));
+        if (env.IsDevelopment())
+        {
+            // Use the local development connection string (from appsettings.json)
+            connectionString = configuration.GetConnectionString("Database")
+                ?? throw new ArgumentNullException(nameof(configuration));
+        }
+        else
+        {
+            // Use the connection string from environment variables for production
+            connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")
+                ?? configuration.GetConnectionString("POSTGRESQLCONNSTR_Database")
+                ?? throw new ArgumentNullException(nameof(configuration));
+        }
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -51,7 +63,6 @@ public static class DependencyInjection
 
         AddRepositories(services);
         AddServices(services);
-
     }
 
     private static void AddRepositories(IServiceCollection services)
