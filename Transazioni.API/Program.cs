@@ -5,10 +5,10 @@ using Transazioni.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Host.UseSerilog((context, configuration) =>
-//    configuration.ReadFrom.Configuration(context.Configuration));
-
 builder.Configuration.AddEnvironmentVariables();
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllers();
 
@@ -20,35 +20,34 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 
-//builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
 
-//app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//app.ApplyMigrations();
-//await app.SeedData();
+app.ApplyMigrations();
+await app.SeedData();
 
 app.UseCors(opt =>
 {
-    //opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
-    opt.AllowAnyOrigin();
+    opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
     opt.AllowAnyMethod();
     opt.AllowAnyHeader();
-    //opt.AllowCredentials();
+    opt.AllowCredentials();
 });
 
 app.UseHttpsRedirection();
 
 app.UseCustomExceptionHandler();
 
-//app.UseAuthentication();
+app.UseAuthentication();
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapHealthChecks("/healthz");
 
