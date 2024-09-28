@@ -11,10 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.ConfigureSwagger();
+builder.ConfigureSwagger();
 
 builder.Services.AddApplication();
-//builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 
@@ -25,8 +25,8 @@ var app = builder.Build();
 //app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
-//app.UseSwagger();
-//app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 //app.ApplyMigrations();
 //await app.SeedData();
@@ -37,7 +37,7 @@ app.UseCors(opt =>
     opt.AllowAnyOrigin();
     opt.AllowAnyMethod();
     opt.AllowAnyHeader();
-    opt.AllowCredentials();
+    //opt.AllowCredentials();
 });
 
 app.UseHttpsRedirection();
