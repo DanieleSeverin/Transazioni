@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.ConfigureSwagger();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+//builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 
@@ -33,7 +33,8 @@ var app = builder.Build();
 
 app.UseCors(opt =>
 {
-    opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
+    //opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
+    opt.AllowAnyOrigin();
     opt.AllowAnyMethod();
     opt.AllowAnyHeader();
     opt.AllowCredentials();
