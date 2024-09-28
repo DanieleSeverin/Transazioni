@@ -23,22 +23,19 @@ var app = builder.Build();
 app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.ApplyMigrations();
+await app.SeedData();
+
+app.UseCors(opt =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
-    app.ApplyMigrations();
-    await app.SeedData();
-
-    app.UseCors( opt =>
-    {
-        opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
-        opt.AllowAnyMethod();
-        opt.AllowAnyHeader();
-        opt.AllowCredentials();
-    });
-}
+    opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
+    opt.AllowAnyMethod();
+    opt.AllowAnyHeader();
+    opt.AllowCredentials();
+});
 
 app.UseHttpsRedirection();
 
