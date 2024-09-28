@@ -24,6 +24,8 @@ builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
