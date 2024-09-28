@@ -58,7 +58,9 @@ public static class ClosedXmlExtensions
             return decimal.Parse(
                 stringNumber,
                 NumberStyles.Float,
-                Options.NumberFormatInfo);
+                //Options.NumberFormatInfo
+                NumberFormatInfo.InvariantInfo
+                );
         } catch (FormatException ex)
         {
             Logger.Error("FormatException trying to parse {Input} to decimal", stringNumber, ex);
