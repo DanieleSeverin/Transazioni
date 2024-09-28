@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
 
     app.UseCors( opt =>
     {
-        opt.WithOrigins("http://localhost:4200");
+        opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
         opt.AllowAnyMethod();
         opt.AllowAnyHeader();
         opt.AllowCredentials();
