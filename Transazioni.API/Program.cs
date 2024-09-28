@@ -16,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddHealthChecks();
+
 //builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
@@ -44,6 +46,8 @@ app.UseCustomExceptionHandler();
 //app.UseAuthentication();
 
 //app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 
