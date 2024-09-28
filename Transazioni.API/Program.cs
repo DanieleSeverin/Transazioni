@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Host.UseSerilog((context, configuration) =>
 //    configuration.ReadFrom.Configuration(context.Configuration));
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

@@ -36,8 +36,11 @@ public static class DependencyInjection
 
     private static void AddPersistence(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString =
-            configuration.GetConnectionString("Database") ??
+        //var connectionString = builder.Configuration.GetConnectionString("Database") ??
+        //            throw new ArgumentNullException(nameof(builder.Configuration));
+
+        var connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database") ??
+            configuration.GetConnectionString("POSTGRESQLCONNSTR_Database") ??
             throw new ArgumentNullException(nameof(configuration));
 
         services.AddDbContext<ApplicationDbContext>(options =>
