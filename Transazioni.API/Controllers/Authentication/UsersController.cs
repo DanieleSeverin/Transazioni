@@ -139,6 +139,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [AllowAnonymous]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
