@@ -42,7 +42,8 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            //options.UseSqlServer(connectionString); // SqlServer
+            options.UseNpgsql(connectionString); // PostgreSQL
         });
 
         AddRepositories(services);

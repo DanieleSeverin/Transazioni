@@ -13,7 +13,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer();
+        optionsBuilder.UseNpgsql();
 
         base.OnConfiguring(optionsBuilder);
     }
