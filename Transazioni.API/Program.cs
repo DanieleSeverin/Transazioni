@@ -37,7 +37,7 @@ await app.SeedData();
 
 app.UseCors(opt =>
 {
-    opt.WithOrigins("http://localhost:4200", "https://moneymap.site");
+    opt.WithOrigins("http://localhost:4200", "https://moneymap.site"); 
     opt.AllowAnyMethod();
     opt.AllowAnyHeader();
     opt.AllowCredentials();
