@@ -9,11 +9,6 @@ public class ClosedXmlParseOptions
     public string DateFormat { get; init; } = "dd/MM/yyyy";
     public CultureInfo CultureInfo { get; init; } = CultureInfo.InvariantCulture;
     public DateTimeStyles DateTimeStyle { get; init; } = DateTimeStyles.None;
-
-    public NumberFormatInfo NumberFormatInfo { get; init; } = new NumberFormatInfo
-    {
-        NumberDecimalSeparator = ","
-    };
 }
 
 public static class ClosedXmlExtensions
@@ -36,15 +31,13 @@ public static class ClosedXmlExtensions
         }
         catch (FormatException ex)
         {
-            Logger.Error("FormatException trying to parse {Input} to DateTime", dateString, ex);
+            Logger.Error(ex, "FormatException trying to parse {Input} to DateTime", dateString);
             throw;
         }
     }
 
-    public static decimal? ToDecimal(this IXLCell DoubleString, ClosedXmlParseOptions? Options = null)
+    public static decimal? ToDecimal(this IXLCell DoubleString)
     {
-        Options ??= new ClosedXmlParseOptions();
-
         string stringNumber = DoubleString.Value.ToString();
 
         if(string.IsNullOrWhiteSpace(stringNumber))
@@ -58,12 +51,11 @@ public static class ClosedXmlExtensions
             return decimal.Parse(
                 stringNumber,
                 NumberStyles.Float,
-                //Options.NumberFormatInfo
                 NumberFormatInfo.InvariantInfo
                 );
         } catch (FormatException ex)
         {
-            Logger.Error("FormatException trying to parse {Input} to decimal", stringNumber, ex);
+            Logger.Error(ex, "FormatException trying to parse {Input} to decimal", stringNumber);
             throw;
         }
 
