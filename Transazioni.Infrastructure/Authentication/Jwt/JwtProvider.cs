@@ -34,7 +34,6 @@ internal sealed class JwtProvider : IJwtProvider
             SecurityAlgorithms.HmacSha256);
 
         DateTime expireAt = DateTime.UtcNow.AddHours(1);
-        //DateTime expireAt = DateTime.UtcNow.AddMinutes(1);
 
         var token = new JwtSecurityToken(
             _options.Issuer,
