@@ -5,29 +5,29 @@ using Transazioni.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) =>
+//    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.ConfigureSwagger();
+//builder.ConfigureSwagger();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddJwtAuthentication();
+//builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+//app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
+//app.UseSwagger();
+//app.UseSwaggerUI();
 
-app.ApplyMigrations();
-await app.SeedData();
+//app.ApplyMigrations();
+//await app.SeedData();
 
 app.UseCors(opt =>
 {
@@ -41,9 +41,9 @@ app.UseHttpsRedirection();
 
 app.UseCustomExceptionHandler();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
