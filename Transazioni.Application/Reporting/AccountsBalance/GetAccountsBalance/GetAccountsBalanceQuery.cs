@@ -1,5 +1,5 @@
 ﻿using Transazioni.Application.Abstractions.Messaging;
 
-namespace Transazioni.Application.Reporting.GetAccountsBalance;
+namespace Transazioni.Application.Reporting.AccountsBalance.GetAccountsBalance;
 
 public sealed record GetAccountsBalanceQuery : IQuery<List<AccountsBalanceSummary>>;

@@ -7,7 +7,7 @@ using Transazioni.Application.Abstractions.Authentication;
 using Transazioni.Application.CheBanca.UploadCheBancaMovements;
 using Transazioni.Application.Fideuram.UploadFideuramMovements;
 using Transazioni.Application.Paypal.UploadPaypalMovements;
-using Transazioni.Application.Reporting.GetAccountsBalance;
+using Transazioni.Application.Reporting.AccountsBalance;
 using Transazioni.Application.Reporting.GetCosts;
 using Transazioni.Application.Reporting.GetRevenue;
 using Transazioni.Application.Santander.uploadSantanderMovements;

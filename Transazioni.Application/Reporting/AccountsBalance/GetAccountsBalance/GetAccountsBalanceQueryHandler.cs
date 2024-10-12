@@ -1,7 +1,7 @@
 ﻿using Transazioni.Application.Abstractions.Messaging;
 using Transazioni.Domain.Abstractions;
 
-namespace Transazioni.Application.Reporting.GetAccountsBalance;
+namespace Transazioni.Application.Reporting.AccountsBalance.GetAccountsBalance;
 
 public class GetAccountsBalanceQueryHandler : IQueryHandler<GetAccountsBalanceQuery, List<AccountsBalanceSummary>>
 {

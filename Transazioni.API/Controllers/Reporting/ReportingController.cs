@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Transazioni.Application.Reporting.GetAccountsBalance;
+using Transazioni.Application.Reporting.AccountsBalance.GetAccountsBalance;
 using Transazioni.Application.Reporting.GetCosts;
 using Transazioni.Application.Reporting.GetRevenue;
 
@@ -22,7 +22,7 @@ public class ReportingController : ControllerBase
     [HttpGet("accounts-balance")]
     public async Task<IActionResult> GetAccountsBalance(CancellationToken cancellationToken)
     {
-        var query = new GetAccountsBalanceQuery();
+        var query = new GetMonthlyCumulativeBalanceQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 

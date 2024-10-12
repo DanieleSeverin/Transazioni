@@ -38,7 +38,7 @@ public static class ClosedXmlExtensions
 
     public static decimal? ToDecimal(this IXLCell DoubleString)
     {
-        string stringNumber = DoubleString.Value.ToString();
+        string stringNumber = DoubleString.Value.ToString().Replace(",", ".");
 
         if(string.IsNullOrWhiteSpace(stringNumber))
         {
