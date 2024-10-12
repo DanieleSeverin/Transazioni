@@ -16,4 +16,4 @@ public sealed record GetMovementsResponse(
 public sealed record MovementAccount(
     Guid Id,
     string AccountName,
-    bool IsPatrimonial);
+    string AccountType);

@@ -15,11 +15,11 @@ public static class GetMovementsExtensions
             OriginAccount: new MovementAccount(
                 mov.AccountId.Value,
                 mov.Account.AccountName.Value,
-                mov.Account.IsPatrimonial),
+                mov.Account.AccountType.Value),
             DestinationAccount: new MovementAccount(
                 mov.DestinationAccountId.Value,
                 mov.DestinationAccount.AccountName.Value,
-                mov.DestinationAccount.IsPatrimonial),
+                mov.DestinationAccount.AccountType.Value),
             Category: mov.Category?.Value,
             IsImported: mov.IsImported,
             Peridiocity: mov.Peridiocity.ToString()

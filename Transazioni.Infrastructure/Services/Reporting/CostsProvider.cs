@@ -18,7 +18,7 @@ internal class CostsProvider : ICostsProvider
     {
         var query = from movement in dbContext.Set<Movements>()
                     join account in dbContext.Set<Accounts>() on movement.DestinationAccountId equals account.Id
-                    where movement.Money.Amount < 0 && !account.IsPatrimonial
+                    where movement.Money.Amount < 0 && account.AccountType != new AccountType(DefaultAccountTypes.Bank)
                     group new { movement.DestinationAccountId, account.AccountName, movement.Money.Currency, movement.Money.Amount }
                     by new { movement.DestinationAccountId, account.AccountName, movement.Money.Currency } into grouped
                     orderby grouped.Sum(m => m.Amount)

@@ -19,7 +19,7 @@ public class AccountBalanceProvider : IAccountBalanceProvider
         var today = DateTime.Today;
 
         var query = from account in DbContext.Set<Accounts>()
-                    where account.IsPatrimonial
+                    where account.AccountType == new AccountType(DefaultAccountTypes.Bank)
                     join movement in DbContext.Set<Movements>()
                         on account.Id equals movement.AccountId into movementGroup
                     from movementTotal in movementGroup.DefaultIfEmpty()

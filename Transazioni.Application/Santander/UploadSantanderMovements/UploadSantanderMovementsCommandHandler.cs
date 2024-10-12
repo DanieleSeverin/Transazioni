@@ -50,7 +50,8 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId);
+            AccountType originAccountType = new AccountType(DefaultAccountTypes.Bank);
+            OriginAccount = new Accounts(originAccountName, userId, originAccountType);
             accountsToCreate.Add(OriginAccount);
         }
 
@@ -80,7 +81,8 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
                 }
 
                 // Se non lo trovi, crealo e aggiungi movimento
-                NotAvalaible = new Accounts(NotAvalaibleAccountName, isPatrimonial: false, userId);
+                AccountType notAvalaibleAccountType = new AccountType(DefaultAccountTypes.None);
+                NotAvalaible = new Accounts(NotAvalaibleAccountName, userId, notAvalaibleAccountType);
 
                 _movementsRepository.Add(movement.ToMovement(
                             OriginAccountId: OriginAccount.Id,
@@ -98,7 +100,8 @@ public class UploadSantanderMovementsCommandHandler : ICommandHandler<UploadSant
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false, userId);
+                AccountType accountType = new AccountType(DefaultAccountTypes.None);
+                Account = new Accounts(AccountName, userId, accountType);
                 accountsToCreate.Add(Account);
             }
 

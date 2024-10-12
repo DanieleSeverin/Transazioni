@@ -12,6 +12,10 @@ public static class JwtErrors
         "Jwt.Missing",
         "Jwt is required.");
 
+    public static readonly Error MissingRefreshToken = new(
+        "Jwt.MissingRefreshToken",
+        "Refresh Token is required.");
+
     public static readonly Error Invalid = new(
         "Jwt.Invalid",
         "Jwt is invalid.");

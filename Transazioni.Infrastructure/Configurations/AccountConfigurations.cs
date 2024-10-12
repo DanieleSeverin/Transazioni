@@ -17,6 +17,10 @@ internal sealed class AccountConfigurations : IEntityTypeConfiguration<Accounts>
             .HasMaxLength(200)
             .HasConversion(accountName => accountName.Value, value => new AccountName(value));
 
+        builder.Property(account => account.AccountType)
+            .HasMaxLength(200)
+            .HasConversion(accountType => accountType.Value, value => new AccountType(value));
+
         builder.HasMany(account => account.Movements)
             .WithOne()
             .HasForeignKey(movement => movement.AccountId)

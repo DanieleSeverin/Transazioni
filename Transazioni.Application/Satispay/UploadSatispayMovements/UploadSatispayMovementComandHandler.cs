@@ -44,7 +44,8 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
         if (OriginAccount is null)
         {
             AccountName originAccountName = new AccountName(request.AccountName);
-            OriginAccount = new Accounts(originAccountName, isPatrimonial: true, userId);
+            AccountType originAccountType = new AccountType(DefaultAccountTypes.Bank);
+            OriginAccount = new Accounts(originAccountName, userId, originAccountType);
             accountsToCreate.Add(OriginAccount);
         }
 
@@ -61,7 +62,8 @@ public class UploadSatispayMovementsCommandHandler : ICommandHandler<UploadSatis
             // Se non lo trovi, crealo
             if (Account is null)
             {
-                Account = new Accounts(AccountName, isPatrimonial: false, userId);
+                AccountType accountType = new AccountType(DefaultAccountTypes.None);
+                Account = new Accounts(AccountName, userId, accountType);
                 accountsToCreate.Add(Account);
             }
 

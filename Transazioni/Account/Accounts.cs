@@ -1,13 +1,15 @@
 ﻿using Transazioni.Domain.Movement;
 using Transazioni.Domain.Users;
 
+#pragma warning disable S1210, S2365
+
 namespace Transazioni.Domain.Account;
 
 public class Accounts : IComparable, IComparable<Accounts>
 {
     public AccountId Id { get; init; }
     public AccountName AccountName { get; init; }
-    public bool IsPatrimonial { get; init; }
+    public AccountType AccountType { get; init; }
     public UserId UserId { get; init; }
 
     private readonly List<Movements> _movements = new List<Movements>();
@@ -17,12 +19,12 @@ public class Accounts : IComparable, IComparable<Accounts>
     public IReadOnlyList<Movements> DestinationMovements => _destinationMovements.ToList();
     public User User { get; init; } = null!;
 
-    public Accounts(AccountName accountName, bool isPatrimonial, UserId userId)
+    public Accounts(AccountName accountName, UserId userId, AccountType accountType)
     {
         Id = AccountId.New();
         AccountName = accountName;
-        IsPatrimonial = isPatrimonial;
         UserId = userId;
+        AccountType = accountType;
     }
 
     public void AddMovement(Movements movement)

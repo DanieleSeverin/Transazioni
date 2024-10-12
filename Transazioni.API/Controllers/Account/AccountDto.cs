@@ -1,3 +1,3 @@
 ﻿namespace Transazioni.API.Controllers.Account;
 
-public sealed record AccountDto(Guid Id, string AccountName, bool IsPatrimonial);
+public sealed record AccountDto(Guid Id, string AccountName, string AccountType);

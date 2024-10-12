@@ -29,7 +29,8 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountCommand,
         }
 
         AccountName accountName = new AccountName(request.AccountName);
-        Accounts account = new Accounts(accountName, request.IsPatrimonial, userId);
+        AccountType accountType = new AccountType(request.AccountType);
+        Accounts account = new Accounts(accountName, userId, accountType);
         _accountRepository.Add(account);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

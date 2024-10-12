@@ -102,7 +102,7 @@ public class UsersController : ControllerBase
 
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
-            return StatusCode(403, Result.Failure(JwtErrors.MissingJwt));
+            return StatusCode(403, Result.Failure(JwtErrors.MissingRefreshToken));
         }
 
         var command = new RefreshJwtCommand(AccessToken: accessToken, RefreshToken: refreshToken);

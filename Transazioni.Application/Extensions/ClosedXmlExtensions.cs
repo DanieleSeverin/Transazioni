@@ -13,7 +13,7 @@ public class ClosedXmlParseOptions
 
 public static class ClosedXmlExtensions
 {
-    private static readonly ILogger Logger = Log.ForContext<ClosedXmlParseOptions>();
+    private static readonly ILogger _logger = Log.ForContext<ClosedXmlParseOptions>();
 
     public static DateTime ToDateTime(this IXLCell DateString, ClosedXmlParseOptions? Options = null)
     {
@@ -31,7 +31,7 @@ public static class ClosedXmlExtensions
         }
         catch (FormatException ex)
         {
-            Logger.Error(ex, "FormatException trying to parse {Input} to DateTime", dateString);
+            _logger.Error(ex, "FormatException trying to parse {Input} to DateTime", dateString);
             throw;
         }
     }
@@ -55,7 +55,7 @@ public static class ClosedXmlExtensions
                 );
         } catch (FormatException ex)
         {
-            Logger.Error(ex, "FormatException trying to parse {Input} to decimal", stringNumber);
+            _logger.Error(ex, "FormatException trying to parse {Input} to decimal", stringNumber);
             throw;
         }
 
