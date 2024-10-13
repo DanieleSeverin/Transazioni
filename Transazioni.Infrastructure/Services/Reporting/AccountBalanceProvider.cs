@@ -60,7 +60,9 @@ public class AccountBalanceProvider : IAccountBalanceProvider
                                     {
                                         account.Id,
                                         account.AccountName,
+#pragma warning disable S6562 // Always set the "DateTimeKind" when creating new "DateTime" instances
                                         Month = new DateTime(movementTotal.Date.Year, movementTotal.Date.Month, 1)
+#pragma warning restore S6562
                                     } into grouped
                                     select new
                                     {

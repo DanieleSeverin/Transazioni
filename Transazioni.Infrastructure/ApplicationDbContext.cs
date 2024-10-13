@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Transazioni.Domain.Abstractions;
 
 namespace Transazioni.Infrastructure;
@@ -14,6 +15,10 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql();
+
+        optionsBuilder.ConfigureWarnings(warnings => warnings
+            .Ignore(CoreEventId.FirstWithoutOrderByAndFilterWarning)
+        );
 
         base.OnConfiguring(optionsBuilder);
     }
