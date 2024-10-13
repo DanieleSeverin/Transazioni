@@ -22,6 +22,21 @@ public class ReportingController : ControllerBase
     [HttpGet("accounts-balance")]
     public async Task<IActionResult> GetAccountsBalance(CancellationToken cancellationToken)
     {
+        var query = new GetAccountsBalanceQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, result.Error);
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("monthly-accounts-balance")]
+    public async Task<IActionResult> GetMonthlyAccountsBalance(CancellationToken cancellationToken)
+    {
         var query = new GetMonthlyCumulativeBalanceQuery();
 
         var result = await _sender.Send(query, cancellationToken);
