@@ -33,14 +33,14 @@ internal class AccountRepository : IAccountRepository
 
     public async Task<Accounts?> GetById(UserId UserId, AccountId AccountId, CancellationToken cancellationToken = default)
     {
-        return await DbContext.Set<Accounts>().FirstOrDefaultAsync(
+        return await DbContext.Set<Accounts>().SingleOrDefaultAsync(
             account => account.UserId == UserId && account.Id == AccountId,
             cancellationToken);
     }
 
     public async Task<Accounts?> GetByName(UserId UserId, AccountName AccountName, CancellationToken cancellationToken = default)
     {
-        return await DbContext.Set<Accounts>().FirstOrDefaultAsync(
+        return await DbContext.Set<Accounts>().SingleOrDefaultAsync(
             account => account.UserId == UserId && account.AccountName == AccountName,
             cancellationToken);
     }

@@ -21,13 +21,13 @@ internal sealed class UserRepository : IUserRepository
     {
         return await DbContext.Set<User>()
             .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+            .SingleOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
         return await DbContext.Set<User>()
             .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(b => b.Email == email, cancellationToken);
+            .SingleOrDefaultAsync(b => b.Email == email, cancellationToken);
     }
 }
