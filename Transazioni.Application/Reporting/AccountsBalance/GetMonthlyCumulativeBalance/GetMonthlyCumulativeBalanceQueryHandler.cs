@@ -15,6 +15,6 @@ public class GetMonthlyCumulativeBalanceQueryHandler : IQueryHandler<GetMonthlyC
 
     public async Task<Result<List<MonthlyAccountBalanceSummary>>> Handle(GetMonthlyCumulativeBalanceQuery request, CancellationToken cancellationToken)
     {
-        return await _accountBalanceProvider.GetMonthlyCumulativeBalance(cancellationToken);
+        return await _accountBalanceProvider.GetMonthlyCumulativeBalance(cancellationToken: cancellationToken);
     }
 }

@@ -7,6 +7,8 @@ using Transazioni.Domain.Movement;
 
 namespace Transazioni.Infrastructure.Services.Reporting;
 
+#pragma warning disable S6562 // Always set the "DateTimeKind" when creating new "DateTime" instances
+
 public class AccountBalanceProvider : IAccountBalanceProvider
 {
     private readonly ApplicationDbContext DbContext;
@@ -16,7 +18,7 @@ public class AccountBalanceProvider : IAccountBalanceProvider
         DbContext = dbContext;
     }
 
-    public async Task<List<AccountsBalanceSummary>> GetAccountsBalance(CancellationToken cancellationToken)
+    public async Task<List<AccountsBalanceSummary>> GetAccountsBalance(CancellationToken cancellationToken = default)
     {
         var today = DateTime.Today;
 
@@ -47,7 +49,10 @@ public class AccountBalanceProvider : IAccountBalanceProvider
         )).ToList();
     }
 
-    public async Task<List<MonthlyAccountBalanceSummary>> GetMonthlyCumulativeBalance(CancellationToken cancellationToken)
+    public async Task<List<MonthlyAccountBalanceSummary>> GetMonthlyCumulativeBalance(
+        DateTime? minDate = null,
+        DateTime? maxDate = null,
+        CancellationToken cancellationToken = default)
     {
         // Step 1: Aggregate movements to get monthly balances for each account
         var monthlyMovementsQuery = from account in DbContext.Set<Accounts>()
@@ -55,14 +60,12 @@ public class AccountBalanceProvider : IAccountBalanceProvider
                                     join movement in DbContext.Set<Movements>()
                                         on account.Id equals movement.AccountId into movementGroup
                                     from movementTotal in movementGroup.DefaultIfEmpty()
-                                    where movementTotal != null
+                                    where movementTotal != null 
                                     group movementTotal by new
                                     {
                                         account.Id,
                                         account.AccountName,
-#pragma warning disable S6562 // Always set the "DateTimeKind" when creating new "DateTime" instances
                                         Month = new DateTime(movementTotal.Date.Year, movementTotal.Date.Month, 1)
-#pragma warning restore S6562
                                     } into grouped
                                     select new
                                     {
@@ -95,7 +98,14 @@ public class AccountBalanceProvider : IAccountBalanceProvider
             }
         }
 
-        return cumulativeBalances.OrderBy(x => x.AccountId).ThenBy(x => x.Month).ToList();
+        minDate ??= new DateTime(DateTime.Today.Year, 1, 1);
+        maxDate ??= new DateTime(DateTime.Today.Year, 12, 31);
+
+        return cumulativeBalances
+            .Where(x => x.Month >= minDate && x.Month <= maxDate)
+            .OrderBy(x => x.AccountId)
+            .ThenBy(x => x.Month)
+            .ToList();
     }
 
 
