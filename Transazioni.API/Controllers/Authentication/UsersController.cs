@@ -69,7 +69,8 @@ public class UsersController : ControllerBase
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.None,
-                Secure = true
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7)
             });
 
         HttpContext.Response.Cookies.Append(
@@ -80,7 +81,8 @@ public class UsersController : ControllerBase
                 HttpOnly = true,
                 Path = "/api/users/refresh",
                 SameSite = SameSiteMode.None,
-                Secure = true
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7)
             });
 
         AuthResponse response = new(result.Value.AccessToken.ExpireAt, result.Value.RefreshToken.ExpireAt);
