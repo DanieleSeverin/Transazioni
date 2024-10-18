@@ -6,7 +6,7 @@ namespace Transazioni.Domain.Extensions;
 
 public class ClosedXmlParseOptions
 {
-    public string[] DateFormats { get; init; } = new[] { "dd/MM/yyyy", "MM/dd/yyyy" }; // Support both European and US formats
+    public string[] DateFormats { get; init; } = new[] { "dd/MM/yyyy", "MM/dd/yyyy", "dd/M/yyyy" }; // Support both European and US formats
     public CultureInfo CultureInfo { get; init; } = CultureInfo.InvariantCulture;
     public DateTimeStyles DateTimeStyle { get; init; } = DateTimeStyles.None;
 }

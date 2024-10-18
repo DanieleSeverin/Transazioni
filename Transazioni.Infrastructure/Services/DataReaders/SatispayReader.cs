@@ -44,7 +44,6 @@ public class SatispayReader : ISatispayReader
 
                     ClosedXmlParseOptions dateOptions = new()
                     {
-                        DateFormat = "dd MMM yyyy",
                         CultureInfo = new CultureInfo("it-IT")
                     };
 

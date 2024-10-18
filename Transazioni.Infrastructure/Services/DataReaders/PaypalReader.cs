@@ -43,10 +43,7 @@ public class PaypalReader : IPaypalReader
                     IXLCell nomeCell = worksheet.Cell(row, startColumn + 11);
                     IXLCell nomeBancaCell = worksheet.Cell(row, startColumn + 12);
 
-                    ClosedXmlParseOptions dateOptions = new()
-                    {
-                        DateFormat = GetDateFormat(dataCell.Value.ToString().Replace(" 00:00:00", ""))
-                    };
+                    ClosedXmlParseOptions dateOptions = new();
 
                     response.Add(new PaypalMovements()
                     {
