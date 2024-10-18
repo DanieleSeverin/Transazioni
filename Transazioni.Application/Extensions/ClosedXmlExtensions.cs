@@ -23,6 +23,7 @@ public static class ClosedXmlExtensions
 
         try
         {
+            _logger.Information("Current Culture: {Input}", CultureInfo.CurrentCulture);
             return DateTime.ParseExact(
                         dateString,
                         Options.DateFormats,
